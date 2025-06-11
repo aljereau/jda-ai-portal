@@ -1,0 +1,103 @@
+---
+title: Backend Integrity - No Direct Modification
+description: Prohibits direct modification of designated backend code directories/files unless explicitly permitted.
+tags: backend, integrity, core-logic, immutability, architecture
+---
+
+# Cursor Rule Definition: Backend Integrity - No Direct Modification
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "backend-integrity-no-direct-modification-001"
+description: "Prohibits direct modification of core backend code unless explicitly overridden or approved."
+severity: "ERROR"
+globs:
+  - "project_core/backend/**/*"
+  - "legacy_system/src/**/*"
+alwaysApply: false
+tags:
+  - backend
+  - core-logic
+  - architecture
+  - integrity
+relatedRules:
+  - dev-workflow-master-001
+  - backend-service-layer-wrappers-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+To protect the stability and integrity of the core backend system by preventing unintended or unapproved modifications.
+
+**Rationale/Benefit:**  
+Ensures backend functionality remains reliable and operational. Changes must be deliberate, planned, and managed outside the scope of typical UI/wrapper development.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. **No direct modifications** to files matched by `globs` during standard development.  
+2. **All backend interactions** must go through a service/abstraction layer (see `@backend-service-layer-wrappers-001.mdc`).  
+3. **Override mechanism:** If a change is explicitly approved (via prompt or flag), the rule can be bypassed **only** for that change. Cursor must log the override.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1:** Creating a UI feature  
+- AI creates wrapper functions in `spotify_downloader_ui/services/`  
+- AI builds components in `spotify_downloader_ui/views/` and `controllers/`  
+- **No changes to** `project_core/backend/`
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1:** Direct utility change  
+```python
+# ❌ DON'T: Modifies a backend helper
+project_core/backend/utils/helpers.py
+```
+*Correction:* Create a new UI-level helper or request backend support.
+
+**Anti-Example 2:** Modifying backend data models  
+```python
+# ❌ DON'T: Adds field to core model
+project_core/backend/models/playlist.py
+```
+*Correction:* Extend or adapt models within UI scope only.
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Block any file operations matching `globs`.
+
+**Suggested Fix Description:**  
+"Action Blocked: Attempt to modify protected backend file '[filepath]'. Modifications are prohibited by `@backend-integrity-no-direct-modification-001.mdc`. Use the service layer or confirm an explicit override."
+
+**Conceptual Logic:**  
+Abort the change. Prompt for confirmation only if override system is in place.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Supported by: `@backend-service-layer-wrappers-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

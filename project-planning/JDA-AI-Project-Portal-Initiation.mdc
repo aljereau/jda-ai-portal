@@ -1,0 +1,154 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Initiation & Scope Definition: JDA AI-Guided Project Portal
+
+## 1. Initiative Overview
+
+### 1.1. Type of Initiative
+- [x] **New Project/Application:** (Building something from scratch)
+- [ ] **New Major Feature:** (Adding significant new functionality to an existing project)
+- [ ] **Feature Expansion/Enhancement:** (Improving or adding to an existing feature)
+- [ ] **Bug Fix:** (Addressing a defect in existing functionality)
+- [ ] **Refactoring/Technical Debt Reduction:** (Improving code quality, performance, or architecture without new user-facing features)
+- [ ] **Research/Proof of Concept (PoC):** (Exploring feasibility or a new technology)
+
+**Elaboration:** Building a comprehensive AI-guided project portal from scratch that serves as a dynamic collaboration hub for JDA's AI consultancy work, starting with proposal generation and evolving into full project management throughout the client lifecycle.
+
+### 1.2. Initiative Statement / Problem to Solve
+To develop a dynamic, AI-guided project portal that eliminates fragmented project management across multiple tools (Notion, Slack, email, PDFs) by creating client-specific collaboration hubs that evolve from initial proposals into comprehensive project management platforms with AI integration, real-time collaboration, and centralized deliverable tracking.
+
+### 1.3. Existing Project Context (If Applicable)
+**Project Name:** N/A - New Project
+**Relevant Modules/Components:** N/A - Greenfield Development
+**Link to Existing Project Overview:** N/A
+**Current State/Background:** JDA currently manages AI consultancy projects across fragmented tools causing opacity, poor client experience, and inefficient project tracking. Need centralized, AI-enhanced solution that grows with each project phase.
+
+## 2. Goals & Objectives
+
+### 2.1. Primary Goal(s)
+- Create unified project portal that serves both JDA internal team and clients
+- Eliminate tool fragmentation and improve project transparency 
+- Enable AI-guided project structuring and phase management
+- Build scalable platform for JDA's AI consultancy business growth
+
+### 2.2. Key Objectives / Success Criteria
+1. **Phase 0 Success:** Generate dynamic proposal pages from meeting transcripts that convert to live project portals by end of Phase 1
+2. **Integration Success:** Successfully connect with existing tools (Slack, Notion, Google Drive, Read.ai) without forcing behavior change by Phase 2
+3. **AI Intelligence:** AI co-pilot accurately summarizes meetings, suggests next steps, and detects project misalignment by Phase 2
+4. **Client Experience:** Non-technical clients can easily navigate portal, provide feedback, and track deliverables with 90%+ satisfaction
+5. **Business Impact:** Reduce project management overhead by 40% and improve client retention through enhanced transparency
+
+## 3. Scope Definition
+
+### 3.1. In Scope (Key Features/Deliverables)
+**Phase 0: Intake & Proposal**
+- Client intake form and portal generator
+- Meeting transcription integration (Read.ai)
+- AI-powered meeting summarizer
+- Dynamic proposal generator with smart templates
+- Live proposal pages with clickable phase cards
+- PDF export capability
+
+**Phase 1: Exploration & Discovery**
+- Dashboard mock-up builder
+- Workflow analysis module with document upload
+- AI readiness assessment engine
+- Project landscape generator
+- Client feedback threads per insight
+
+**Phase 2: Design & Build**
+- Module breakdown engine with AI suggestions
+- Timeline creator (Gantt-style)
+- Deliverables tracker with live status
+- Dev tasks + integration notes (internal view)
+- Linked references to external tools
+
+**Phase 3: Deployment & Post-Launch**
+- Rollout checklist (shared view)
+- AI system handbook generator
+- Retainer toggle functionality
+- Request center for feature additions
+- Impact tracker with ROI stats
+
+**Always-On Features**
+- Tool integrations (Slack, Notion, Google ecosystem)
+- AI co-pilot for summarization and guidance
+- Access control (team vs client roles)
+- Internal analytics dashboard
+- Client overview dashboard
+
+### 3.2. Out of Scope
+- Replacement of existing tools (integration-focused approach)
+- Multi-language support (Phase 1)
+- White-label version for other agencies
+- Invoicing integration (Phase 1)
+- Mobile app development (Phase 1)
+- Advanced API access for third parties
+
+### 3.3. Assumptions
+- Read.ai integration will remain stable and accessible
+- Clients will adopt portal usage alongside existing tool workflows
+- JDA team has bandwidth for phased rollout and user feedback incorporation
+- Integration APIs (Slack, Notion, Google) will remain accessible
+- Initial client base will provide feedback for iterative improvement
+
+## 4. Requirements & Constraints (High-Level)
+
+### 4.1. Key Functional Requirements
+- **FR1:** System shall generate proposal pages from meeting transcripts within 24 hours
+- **FR2:** System shall provide real-time sync with integrated tools without data duplication
+- **FR3:** System shall enable role-based access control for team vs client views
+- **FR4:** System shall track project phases with automated status updates
+- **FR5:** AI co-pilot shall provide contextual suggestions based on project data
+
+### 4.2. Key Non-Functional Requirements (NFRs)
+- **NFR1 (Performance):** Portal pages must load within 2 seconds under normal load
+- **NFR2 (Security):** All client data must be encrypted at rest and in transit
+- **NFR3 (Usability):** Non-technical users must complete key tasks without training
+- **NFR4 (Scalability):** System must support 50+ concurrent projects by Phase 2
+- **NFR5 (Reliability):** 99.5% uptime during business hours
+
+### 4.3. Key Technical Constraints or Considerations
+- Must integrate with existing JDA tech stack and tools
+- Python/JavaScript preferred for development consistency
+- Cloud-hosted solution for accessibility and scalability
+- API-first design for future integrations
+- Mobile-responsive design for client accessibility
+
+## 5. Stakeholders & Target Users
+
+**Primary Users/Audience:**
+- JDA Internal Team (project managers, AI developers, operations)
+- JDA Clients (decision-makers, stakeholders, operators)
+
+**Key Stakeholders:**
+- JDA Leadership (business strategy and growth)
+- Development Team (technical implementation)
+- Client Success Team (user experience and adoption)
+- Current JDA Clients (feedback and validation)
+
+## 6. Next Steps & Proposed Path Forward
+
+**Proposed Path:**
+Based on our discussion, this is a new project with significant complexity and multiple phases. The recommended next step is to create a comprehensive project plan.
+
+**AI Action:** Proceed to create `JDA-AI-Project-Portal-Overview.mdc` using the `Project Overview Template.mdc`, incorporating:
+- Detailed technical architecture decisions
+- Complete phase breakdown with dependencies
+- Resource allocation and timeline estimates  
+- Risk assessment and mitigation strategies
+- Success metrics and validation criteria
+
+**Key Information to Carry Forward:**
+- **Core Philosophy:** Integration-focused, not replacement-focused approach
+- **Critical Success Criterion:** Non-technical client adoption with 90%+ satisfaction
+- **Technical Constraint:** Must work with existing JDA tool ecosystem
+- **Business Objective:** 40% reduction in project management overhead
+- **Scalability Target:** Support 50+ concurrent projects by Phase 2
+
+---
+**AI Action Required by User:** Please review the information above. Once you confirm its accuracy and agree with the "Proposed Path," I will proceed to create the comprehensive Project Overview document using our established templates.
+

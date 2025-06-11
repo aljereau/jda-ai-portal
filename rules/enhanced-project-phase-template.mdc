@@ -1,0 +1,55 @@
+---
+title: Enhanced Project Phase Template
+description: A comprehensive template for defining and guiding a single phase of a software development project, focusing on clarity, risk management, and efficient execution.
+tags: project-management, planning, phase, development, risk, scope, execution
+---
+
+# Phase [Phase Number]: [Phase Name] - Definition
+
+## Overview
+
+This phase focuses on [briefly describe the main focus of this phase, e.g., "establishing the foundational structure for the [Project Name]'s [Key Feature/Module]" or "implementing the core user interface for [Specific Functionality]"]. The goal is to [state the primary outcome or achievement of this phase] and prepare the groundwork for subsequent phases.
+
+## Objectives
+
+1.  [Objective 1, e.g., "Set up [Specific Technology] development environment"]
+2.  [Objective 2, e.g., "Create application skeleton and module structure for [Module Name]"]
+3.  [Objective 3, e.g., "Abstract [Backend/Core Logic] functionality for [UI/Module] integration"]
+4.  [Objective 4, e.g., "Implement error handling and logging for [Component Name]"]
+5.  (Add more as needed)
+
+## Prerequisites
+
+*   [Prerequisite 1, e.g., "Phase [Previous Phase Number]: [Previous Phase Name] completed and its Progress Document (`@[Previous-Phase-Name]-Progress.mdc`) shows all DoD items verified."]
+*   [Prerequisite 2, e.g., "Access to [Specific System/API/Credentials] granted."]
+*   [Prerequisite 3, e.g., "Required software ([Tool X], [Library Y]) installed and configured."]
+*   [Prerequisite 4, e.g., "Clear understanding of requirements for [Feature A] documented."]
+*   (Add more as needed)
+
+## Assumptions
+
+*   [Assumption 1, e.g., "The existing backend API for [Feature Z] will remain stable during this phase."]
+*   [Assumption 2, e.g., "User authentication will be handled by a separate, existing module."]
+*   [Assumption 3, e.g., "Performance requirements for [Component A] are within current system capabilities."]
+*   [Assumption 4, e.g., "Third-party service [Service Name] will be available and performant."]
+*   (Add more as needed)
+
+## Scope
+
+### In Scope:
+
+*   [In-scope item 1, e.g., "Development of UI components for user registration and login."]
+*   [In-scope item 2, e.g., "Integration with the `playlist_service` for data retrieval and display."]
+*   [In-scope item 3, e.g., "Basic unit tests for all new controllers and services (as per @automated-test-requirements-001.mdc)."]
+*   [In-scope item 4, e.g., "Implementation of core business logic for [Specific Process]."]
+
+### Out of Scope:
+
+*   [Out-of-scope item 1, e.g., "Advanced analytics dashboard (deferred to Phase X)."]
+*   [Out-of-scope item 2, e.g., "Mobile responsiveness for the UI (to be addressed in a dedicated UI polish phase, unless specified for this phase per @ui-responsiveness-check-001.mdc)."]
+*   [Out-of-scope item 3, e.g., "Full internationalization and localization support."]
+*   [Out-of-scope item 4, e.g., "Performance optimization beyond baseline functional requirements (unless specified per @performance-test-requirements-001.mdc)."]
+
+...
+[Content truncated for brevity: includes risk assessment, tasks, implementation guidelines, deliverables, DoD, etc.]
+

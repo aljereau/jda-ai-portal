@@ -1,0 +1,27 @@
+---
+title: UI Component User Validation Prompt
+description: Requires the AI to prompt for human/user validation for newly developed or significantly changed UI components.
+tags: ui, ux, validation, testing, user-testing, human-in-the-loop
+---
+
+# Cursor Rule Definition: UI Component User Validation Prompt
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "ui-component-user-validation-prompt-001"
+description: "For significant new UI components or major UI changes, the AI must prompt for human visual and functional validation before the component is fully signed off."
+severity: "WARNING"
+globs: ["**/views/**/*.vue", "**/components/**/*.jsx", "**/layouts/**/*.xml", "**/views/**/*.py"]
+alwaysApply: false
+tags: ["ui", "ux", "validation", "user-testing", "human-review", "workflow"]
+relatedRules: [
+  "dev-workflow-master-001",
+  "component-validation-before-advancement-001",
+  "validation-evidence-documentation-001"
+]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "2025-05-26"
+```

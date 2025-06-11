@@ -1,0 +1,219 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Universal Project Structure Governance Rule
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "universal-project-structure-governance-001"
+description: "Enforce universal, technology-agnostic project structure that works across all domains, languages, and editors while maintaining strict separation between development rules and project files."
+severity: "ERROR"
+globs: "**/*"
+alwaysApply: true
+tags: ["file-structure", "governance", "universal", "technology-agnostic", "domain-agnostic", "editor-agnostic"]
+relatedRules: ["initial-project-structure-definition-001", "project-rules-separation-001", "universal-naming-conventions-001"]
+autoFixable: "SUGGEST_ONLY"
+version: "2.0"
+lastUpdated: "2024-12-22"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+**Purpose:** This rule establishes and enforces a universal project structure methodology that works consistently across ALL types of software projects (web apps, mobile apps, trading bots, games, APIs, etc.), ALL technology stacks (Python, JavaScript, Java, C#, etc.), and ALL development environments (Cursor, VS Code, IntelliJ, etc.).
+
+**Rationale/Benefit:** A universal structure system provides consistency across projects, reduces cognitive load when switching between different types of projects, enables reusable templates and processes, and ensures team members can navigate any project immediately. This prevents the chaos of project-specific organizational systems and creates a standardized methodology for software development.
+
+### B. Detailed Requirements & Specifications
+
+**Requirement 1: Universal Core Structure (MANDATORY for ALL projects)**
+```
+All projects MUST implement these 9 universal core folders:
+
+# PROJECT MANAGEMENT CORE
+/project-planning/          - Phases, milestones, roadmaps, timeline
+/project-requirements/      - Business requirements, user stories, acceptance criteria  
+/project-documentation/     - General project docs, guides, README files
+
+# TECHNICAL CORE
+/project-architecture/      - System design, diagrams, technical decisions
+/project-environments/      - Environment configs (dev/staging/prod)
+/project-quality/           - Testing strategies, performance benchmarks
+
+# OPERATIONAL CORE  
+/project-deployment/        - Infrastructure as code, CI/CD, deployment scripts
+/project-monitoring/        - Logging, metrics, alerting, health checks
+/project-security/          - Security policies, vulnerability assessments
+
+# KNOWLEDGE CORE
+/project-research/          - Research, competitive analysis, documentation
+/project-assets/            - Static resources, design files, templates
+/project-integrations/      - Third-party APIs, external systems, vendor docs
+```
+
+**Requirement 2: Domain-Specific Extensions (ADD as needed)**
+- **Modular Addition**: Add domain-specific folders only when needed
+- **Clear Separation**: Domain folders must be clearly distinguishable from universal core
+- **Documented Purpose**: Each domain extension must have clear documentation
+
+**Requirement 3: Technology-Agnostic Source Code Organization**
+```
+/src/                       - All source code (language agnostic)
+├── /core/                  - Core business logic
+├── /services/              - Service layer, external integrations
+├── /data/                  - Data access, models, persistence  
+├── /api/                   - API endpoints, controllers
+├── /ui/                    - User interface components
+├── /utils/                 - Shared utilities, helpers
+├── /config/                - Application configuration
+└── /tests/                 - Unit tests, integration tests
+```
+
+**Requirement 4: Universal File Naming Conventions**
+- **Project Files**: `{ProjectName}-{Type}.mdc` (e.g., `Hanabi-1-Bot-Overview.mdc`)
+- **Phase Files**: `Phase-{N}-{PhaseName}-{Type}.mdc` 
+- **Documentation**: `{Component}-Documentation.md`
+- **Configurations**: `{Environment}-config.{ext}`
+
+**Requirement 5: Strict Rules/Project Separation (CRITICAL)**
+- **Development Rules**: ONLY in `AI Development_system/` - for reference across ALL projects
+- **Project Files**: ONLY in project folders - specific to current project
+- **NO MIXING**: Project-specific files never go in AI Development_system
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1: Universal Core Implementation (Any Project Type)**
+```
+✅ DO: Implement universal core regardless of project domain
+# Trading Bot Project:
+/project-planning/Phase-1-Foundation-Definition.mdc
+/project-requirements/Hanabi-1-Bot-Requirements.mdc
+/project-architecture/System-Architecture-Diagram.mdc
+
+# Web App Project:  
+/project-planning/Phase-1-MVP-Definition.mdc
+/project-requirements/WebApp-User-Stories.mdc
+/project-architecture/Frontend-Backend-Architecture.mdc
+
+# Mobile App Project:
+/project-planning/Phase-1-Core-Features-Definition.mdc
+/project-requirements/MobileApp-Feature-Requirements.mdc  
+/project-architecture/iOS-Android-Architecture.mdc
+```
+
+**Example 2: Domain-Specific Extensions**
+```
+✅ DO: Add domain-specific folders when needed
+# Trading Bot adds:
+/project-strategy/          - Trading algorithms, backtesting
+/project-compliance/        - Financial regulations
+
+# Game Development adds:
+/project-game-design/       - Game mechanics, level design
+/project-art-assets/        - Sprites, models, animations
+/project-audio/             - Music, sound effects
+
+# Data Science adds:
+/project-datasets/          - Training data, validation sets
+/project-models/            - ML models, training results
+/project-experiments/       - Experiment tracking, results
+```
+
+**Example 3: Technology Agnostic Source Organization**
+```
+✅ DO: Use same source structure regardless of language
+# Python Project:
+/src/core/trading_engine.py
+/src/services/hyperliquid_service.py
+/src/data/market_data.py
+
+# JavaScript Project:
+/src/core/gameEngine.js
+/src/services/apiService.js
+/src/data/userModel.js
+
+# Java Project:
+/src/core/BusinessLogic.java
+/src/services/DatabaseService.java
+/src/data/EntityModels.java
+```
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1: Missing Universal Core**
+```
+❌ DON'T: Skip universal core folders
+# Incomplete structure missing core folders:
+/src/
+/docs/
+/config/
+# Missing: project-planning, project-requirements, project-architecture, etc.
+# Result: Inconsistent organization across projects
+```
+
+**Anti-Example 2: Technology-Specific Organization**
+```
+❌ DON'T: Organize by technology instead of function
+/python-code/
+/javascript-code/  
+/java-code/
+# Should be organized by function: /src/core/, /src/services/, etc.
+```
+
+**Anti-Example 3: Project Files in Rules Directory**
+```
+❌ DON'T: Place project-specific files in AI Development_system
+/AI Development_system/3_Development_Rules/Workflow_and_Process/My-Project-Progress.mdc
+# This violates universal separation - project files belong in project folders
+```
+
+**Anti-Example 4: Domain-Specific Names in Universal Core**
+```
+❌ DON'T: Make universal core domain-specific
+/trading-strategy/          # Should be /project-strategy/ (domain extension)
+/game-design/               # Should be /project-game-design/ (domain extension)
+/web-analytics/             # Should be /project-analytics/ (domain extension)
+# Universal core must remain technology/domain agnostic
+```
+
+### E. Automated Correction Logic / Suggestions
+
+**For Missing Universal Core:**
+- **Detection Pattern:** Project missing any of the 12 universal core folders
+- **Suggested Fix:** Create missing universal core folders with appropriate templates
+- **Transformation Logic:** Generate folder structure with basic documentation templates
+
+**For Technology-Specific Organization:**
+- **Detection Pattern:** Source code organized by technology rather than function
+- **Suggested Fix:** Reorganize into universal /src/ structure by functional purpose
+- **Required Action:** Move files from technology folders to functional folders
+
+**For Rules/Project Mixing:**
+- **Detection Pattern:** Project-specific files found in AI Development_system directories
+- **Suggested Fix:** Move project files to appropriate project folders
+- **Validation:** Ensure AI Development_system contains only universal rules and templates
+
+### F. File & Rule References
+
+**Related Rules:** 
+- See @initial-project-structure-definition-001.mdc for basic setup
+- See @universal-naming-conventions-001.mdc for file naming standards
+- See @project-rules-separation-001.mdc for separation principles
+
+**Universal Structure Reference:**
+- Complete specification: @project-structure/universal-project-structure-standard.mdc
+- Implementation guide: @project-structure/implementation-checklist.mdc
+
+**Templates:**
+- Universal core templates in @AI Development_system/4_Project_Templates/Universal/
+- Domain-specific templates in @AI Development_system/4_Project_Templates/Domain_Specific/
+
+## III. Rule Maintenance Log
+
+**2024-12-22** - v2.0 - Claude-Sonnet-4-Session-20241222: **MAJOR REDESIGN** - Complete overhaul from project-specific to universal project structure governance. Now supports ANY project type, ANY technology stack, ANY editor. Establishes 12-folder universal core with modular domain extensions. This rule now serves as the foundation for ALL future software projects regardless of domain or technology. Supersedes file-structure-governance-001.mdc.
+

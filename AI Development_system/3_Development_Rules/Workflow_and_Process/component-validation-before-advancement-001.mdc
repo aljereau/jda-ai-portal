@@ -1,0 +1,110 @@
+---
+title: Component Validation Before Advancement
+description: Requires individual components/tasks to be validated before marking as complete or moving to dependent tasks.
+tags: validation, testing, workflow, quality-assurance, process
+---
+
+# Cursor Rule Definition: Component Validation Before Advancement
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "component-validation-before-advancement-001"
+description: "Each developed component or completed task must be validated according to defined criteria before dependent work proceeds."
+severity: "ERROR"
+globs: ""
+alwaysApply: true
+tags:
+  - validation
+  - testing
+  - workflow
+  - quality
+relatedRules:
+  - dev-workflow-master-001
+  - phase-completion-before-next-001
+  - automated-test-requirements-001
+  - validation-evidence-documentation-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure each task or component is validated before it's marked complete or used in dependent work.
+
+**Rationale/Benefit:**  
+Early validation minimizes bugs, reduces integration pain, and ensures each part of the system is reliable and production-ready.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Each task must be validated before its status is set to **"Validated"** or **"Completed"** in the `@AI-Driven Phase Progress Tracking`.  
+2. Validation must follow the **"Testing Criteria"** and **"Deliverables"** outlined in the `@Enhanced Project Phase Template`.  
+3. Include **automated tests** where applicable (`@automated-test-requirements-001.mdc`).  
+4. UI components should be validated against specs and usability expectations.  
+5. Validation evidence must be documented in the **Notes/Evidence/Link** column (`@validation-evidence-documentation-001.mdc`).  
+6. AI must not start dependent tasks until prerequisites are validated, unless explicitly overridden.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1:** Backend method  
+- Task: "Implement `getUserProfile` service method"  
+- Unit tests written and passed  
+- Tracker updated: Status "Validated", Evidence "Unit tests passed (see `test_report.log`)"
+
+**Example 2:** UI component  
+- Task: "Build login form"  
+- Render matches design, validation JS works  
+- Tracker updated: Evidence includes screenshot comparison and test logs
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1:** Skipping unit tests  
+- AI writes `AuthService.login()`  
+❌ Immediately used in controller before testing
+
+**Anti-Example 2:** Missing evidence  
+- AI marks task "Completed"  
+❌ No validation proof in progress tracker
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+- Task marked "Validated" without evidence  
+- Dependent task starts while prerequisite is unvalidated
+
+**Suggested Fix Description:**  
+"Action Blocked: Task `[Task Description]` cannot be marked 'Validated' without validation evidence.  
+Or: Cannot start `[Dependent Task]` until `[Prerequisite Task]` is validated."
+
+**Conceptual Logic:**  
+AI should halt, request validation or documentation, and only proceed once requirements are met.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Evidence requirements: `@validation-evidence-documentation-001.mdc`  
+- Test requirements: `@automated-test-requirements-001.mdc`  
+- Task structure: `@Enhanced Project Phase Template`  
+- Progress tracking: `@AI-Driven Phase Progress Tracking`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

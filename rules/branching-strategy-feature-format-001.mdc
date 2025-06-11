@@ -1,0 +1,108 @@
+---
+title: Branching Strategy - Feature Branch Format
+description: Enforces the naming convention for feature branches.
+tags: version-control, git, branching, workflow, naming-convention
+---
+
+# Cursor Rule Definition: Branching Strategy - Feature Branch Format
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "branching-strategy-feature-format-001"
+description: "Feature branches must follow the format: feature/phase<number>-<component-name>"
+severity: "ERROR"
+globs: "" # This rule applies to Git repository state, not specific files.
+alwaysApply: true
+tags:
+  - git
+  - branching
+  - workflow
+  - naming
+relatedRules:
+  - dev-workflow-master-001
+autoFixable: "SUGGEST_ONLY" # AI can suggest renaming but shouldn't force rename.
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure consistency and clarity in branch naming, making it easy to identify the purpose and context of a branch.
+
+**Rationale/Benefit:**  
+Standardized branch names improve repository navigation, support phase/component tracking, and simplify automation that relies on naming conventions.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. **Prefix:** All feature branches must start with `feature/`.  
+2. **Phase Identifier:** Immediately after the prefix, the name must include `phase<number>-`, e.g., `phase1-`, `phase2-`.  
+3. **Component Name:** The rest of the branch name must be a kebab-case descriptor of the component (e.g., `user-login`, `playlist-data-model`).  
+
+*Clarification:* The component name should be concise but clearly describe the work being done.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1:** Correct for Phase 1, "environment setup"
+```
+feature/phase1-environment-setup
+```
+
+**Example 2:** Correct for Phase 2, "playlist input UI"
+```
+feature/phase2-playlist-input-ui
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1:** Missing `feature/` prefix  
+```
+phase1-environment-setup
+```
+
+**Anti-Example 2:** Incorrect phase format or incomplete branch name  
+```
+feature/phaseTwo-logging  
+feature/phase3
+```
+
+**Anti-Example 3:** Component name not in kebab-case  
+```
+feature/phase2-PlaylistInputUI
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Regex used: `^feature/phase[0-9]+-(?:[a-z0-9]+-)*[a-z0-9]+$`
+
+**Suggested Fix Description:**  
+"The current branch name '[current-branch-name]' does not follow the required format 'feature/phase<number>-<component-name>'. Please rename the branch. Example: `feature/phaseX-your-component-name`."
+
+**Conceptual Logic:**  
+If parts of the name suggest a phase and component, AI should reformat them and suggest a compliant name.
+
+---
+
+### F. File & Rule References
+
+**Governed by:** `@dev-workflow-master-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

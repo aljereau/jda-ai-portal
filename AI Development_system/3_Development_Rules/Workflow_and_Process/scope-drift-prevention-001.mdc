@@ -1,0 +1,164 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Scope Drift Prevention Rule
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "scope-drift-prevention-001"
+description: "Establish continuous monitoring and prevention mechanisms to detect and correct scope drift during phase execution."
+severity: "WARNING"
+globs: "project-phases/**/*.mdc, src/**/*"
+alwaysApply: true
+tags: ["scope-management", "monitoring", "prevention", "project-control"]
+relatedRules: ["phase-objective-validation-001", "phase-completion-before-next-001", "component-validation-before-advancement-001"]
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "2024-12-22"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+**Purpose:** This rule establishes ongoing monitoring mechanisms to detect scope drift early and provides corrective actions to realign development with original phase objectives before significant resources are wasted.
+
+**Rationale/Benefit:** Scope drift often happens gradually and unnoticed until significant work has been done in the wrong direction. Early detection prevents resource waste, maintains project timelines, and ensures deliverables meet stakeholder expectations. This rule would have prevented our Phase 1 deviation where we built service layers instead of the planned backtesting framework.
+
+### B. Detailed Requirements & Specifications
+
+**Requirement 1:** Perform scope validation at regular development checkpoints.
+- **Frequency:** Every 5 major commits or weekly (whichever comes first)
+- **Method:** Compare current development against original phase objectives
+- **Documentation:** Log validation results in progress tracking document
+
+**Requirement 2:** Establish scope drift detection triggers.
+- **Trigger 1:** Building components not mentioned in phase definition
+- **Trigger 2:** Spending >20% of phase time on unplanned features
+- **Trigger 3:** Creating files/modules outside planned architecture
+- **Action:** Immediate scope validation required when triggers activate
+
+**Requirement 3:** Implement development direction validation before major architectural decisions.
+- **Validation Point:** Before creating new modules, services, or major components
+- **Process:** Confirm component serves original phase objectives
+- **Documentation:** Record validation decision and reasoning
+
+**Requirement 4:** Maintain scope change log for approved deviations.
+- **Location:** Section in phase progress tracking document
+- **Content:** Original plan, proposed change, justification, impact assessment, approval status
+- **Review:** Weekly review of all scope changes for cumulative impact
+
+**Requirement 5:** Establish scope recovery procedures for detected drift.
+- **Assessment:** Evaluate extent of drift and recovery options
+- **Options:** Realign development, update phase definition, or accept scope change
+- **Decision:** Document chosen approach and reasoning
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1: Regular Scope Validation**
+```
+✅ DO: Perform weekly scope validation
+Week 2 Scope Check:
+Original Objective: "Develop Comprehensive Backtesting Framework"
+Current Development: Working on backtesting engine architecture
+✅ ALIGNED: Development directly supports original objective
+Continue with planned tasks
+```
+
+**Example 2: Proper Trigger Response**
+```
+✅ DO: Respond to scope drift triggers
+Trigger Detected: Building DataStorageService not in original phase plan
+Original Plan: Basic data collection for backtesting
+Current Work: Advanced service layer architecture
+Action: PAUSE development, validate against objectives
+Decision: Service layer enhances backtesting data needs - APPROVED with scope update
+```
+
+**Example 3: Proactive Architecture Validation**
+```
+✅ DO: Validate before major architectural decisions
+Before implementing: Comprehensive caching system
+Validation Question: "Does caching system serve backtesting framework objectives?"
+Analysis: Caching improves backtesting performance - ALIGNED
+Proceed: Yes, with documentation of how it serves original goals
+```
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1: Ignoring Scope Drift Triggers**
+```
+❌ DON'T: Continue development when triggers activate
+Built: HyperliquidService, DataStorageService, DataPipelineService
+Original Plan: Backtesting framework with basic data collection
+Triggers Ignored: Multiple unplanned components created
+Result: Spent weeks building wrong architecture
+```
+
+**Anti-Example 2: No Regular Validation**
+```
+❌ DON'T: Skip regular scope validation checks
+Week 1: Started data collection
+Week 3: Building service architecture  
+Week 5: Implementing storage systems
+No Validation: Never checked if work aligns with backtesting objectives
+Result: Scope drift undetected until project review
+```
+
+**Anti-Example 3: Undocumented Scope Changes**
+```
+❌ DON'T: Make scope changes without proper documentation
+Changed: From basic data collection to advanced service layer
+Justification: None documented
+Impact Assessment: Not performed
+Approval Process: Skipped
+Result: Unclear if changes serve project goals
+```
+
+### E. Automated Correction Logic / Suggestions
+
+**For Scope Drift Detection (Trigger Activation):**
+- **Detection Pattern:** Development work on components not mentioned in phase definition
+- **Suggested Action:** Pause development and perform scope validation
+- **Process:** Compare current work against original objectives, document alignment or request scope change approval
+
+**For Regular Validation Overdue:**
+- **Detection Pattern:** No scope validation performed in >7 days or >5 commits
+- **Suggested Fix:** Schedule immediate scope validation checkpoint
+- **Required Documentation:** Update progress tracking with validation results
+
+**Example Scope Validation Process:**
+```
+Scope Validation Checklist:
+1. List all components built in last period
+2. Map each component to original phase objectives
+3. Identify any unmapped components (potential drift)
+4. For unmapped components:
+   - Justify how they serve original goals, OR
+   - Request formal scope change approval, OR
+   - Plan to refactor/remove drift
+5. Document validation results and decisions
+```
+
+### F. File & Rule References
+
+**Related Rules:** 
+- See @phase-objective-validation-001.mdc for objective validation requirements
+- See @component-validation-before-advancement-001.mdc for component validation
+- See @technical-debt-logging-format-001.mdc for documenting scope decisions
+
+**Progress Tracking Integration:**
+- Scope validation results must be logged in phase progress tracking document
+- Use format from @AI Development_system/2_Phase_Planning_and_Execution_Templates/
+
+**Phase Definition Reference:**
+- All scope validation must reference original phase definition in `/project-phases/`
+
+## III. Rule Maintenance Log
+
+**2024-12-22** - v1.0 - Claude-Sonnet-4-Session-20241222: Initial rule creation to establish proactive scope drift monitoring after discovering major scope deviation in Phase 1. Provides early detection mechanisms and corrective procedures to prevent resource waste on unplanned features.
+

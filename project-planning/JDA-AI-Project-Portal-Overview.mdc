@@ -1,0 +1,173 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# JDA AI-Guided Project Portal - Project Overview & Roadmap
+
+## 1. Project Vision & Goals
+
+### 1.1. Project Statement
+To develop a dynamic, AI-guided project portal that transforms JDA's AI consultancy operations by creating client-specific collaboration hubs that evolve from initial meeting transcripts into comprehensive project management platforms, eliminating tool fragmentation while providing unprecedented transparency and AI-enhanced project intelligence.
+
+### 1.2. Key Objectives
+1. **Unified Project Experience:** Create seamless portal that serves both JDA internal team and clients throughout entire project lifecycle
+2. **AI-Enhanced Intelligence:** Implement AI co-pilot that summarizes meetings, suggests next steps, and detects project misalignment in real-time
+3. **Integration Excellence:** Successfully connect with existing tools (Slack, Notion, Google Drive, Read.ai) without forcing behavior change
+4. **Client Experience Excellence:** Achieve 90%+ client satisfaction with non-technical users completing key tasks without training
+5. **Operational Efficiency:** Reduce project management overhead by 40% while supporting 50+ concurrent projects by Phase 2
+6. **Business Scalability:** Create platform foundation that scales with JDA's AI consultancy business growth
+
+### 1.3. Target Audience/Users
+**Primary Users:**
+- **JDA Internal Team:** Project managers, AI developers, operations staff requiring centralized project tracking and client collaboration
+- **JDA Clients:** Decision-makers, stakeholders, and operators (often non-technical) needing transparent project visibility and easy feedback mechanisms
+
+**Secondary Users:**
+- **JDA Leadership:** Requiring business analytics and project portfolio overview
+- **Client Success Team:** Managing client relationships and ensuring project satisfaction
+
+## 2. Core Principles & Guiding Philosophies
+
+1. **Integration-First, Not Replacement:** Enhance existing tool workflows rather than forcing tool migration, maintaining seamless sync without data duplication
+2. **AI-Human Collaboration:** AI provides intelligence and automation while maintaining human decision-making and relationship management at the center
+3. **Progressive Enhancement:** Portal evolves with project complexity, starting simple (proposals) and growing sophisticated (full project management)
+4. **Client-Centric Transparency:** Non-technical clients must feel empowered and informed, not overwhelmed by technical complexity
+5. **Phased & Iterative Development:** Follow structured, phase-based approach with continuous client and team feedback incorporation
+6. **Data Security & Privacy:** All client data encrypted at rest and in transit with role-based access control ensuring information security
+7. **Scalable Architecture:** Design for growth from prototype to enterprise-level usage supporting multiple concurrent projects
+
+## 3. Project Structure & Governance
+
+### 3.1. Standard Documentation & Workflow
+All project development will adhere to the following standard templates and workflows:
+- **Project Phasing & Planning:** Uses `Enhanced Project Phase Template` for each defined phase
+- **Progress Tracking:** Uses `AI-Driven Phase Progress Tracking` for each active phase
+- **Development Rules & Standards:** Defined in `dev-workflow-master-001.md` covering code quality, testing, documentation
+- **Quality Assurance:** Follows automated testing requirements and validation evidence documentation standards
+
+### 3.2. Progress Tracking Links
+- `Phase 1: Foundation & Core Infrastructure Progress` (To be created when Phase 1 begins)
+- `Phase 2: Proposal & Intake System Progress` (To be created when Phase 2 begins)
+- `Phase 3: Discovery & Collaboration Tools Progress` (To be created when Phase 3 begins)
+- `Phase 4: Advanced Features & AI Intelligence Progress` (To be created when Phase 4 begins)
+- `Phase 5: Deployment & Optimization Progress` (To be created when Phase 5 begins)
+
+## 4. Development Phases
+
+### Phase 1: Foundation & Core Infrastructure
+- Establish development environment, project scaffolding, and core architecture
+- Implement authentication, authorization, and role-based access control framework
+- Set up database models for users, projects, phases, and basic integrations
+- Create API foundation with proper error handling and security middleware
+- Establish testing framework and CI/CD pipeline
+
+### Phase 2: Proposal & Intake System (Phase 0 Features)
+- Implement client intake form and portal generator functionality
+- Develop Read.ai meeting transcription integration
+- Create AI-powered meeting summarizer using OpenAI/Claude APIs
+- Build dynamic proposal generator with smart templates based on JDA framework
+- Design and implement live proposal pages with clickable phase cards
+- Add PDF export capability for traditional proposal delivery
+
+### Phase 3: Discovery & Collaboration Tools (Phase 1 Features)
+- Develop dashboard mock-up builder with drag-and-drop interface
+- Create workflow analysis module with document upload and processing
+- Implement AI readiness assessment engine with scoring algorithms
+- Build project landscape generator for comprehensive project summaries
+- Design client feedback threads system with real-time notifications
+
+### Phase 4: Advanced Features & AI Intelligence (Phase 2-3 Features)
+- Implement module breakdown engine with AI-powered suggestions
+- Create timeline creator with Gantt-style visualization
+- Develop deliverables tracker with live status updates
+- Build AI co-pilot for contextual suggestions and misalignment detection
+- Integrate tool connections (Slack, Notion, Google ecosystem)
+- Add retainer toggle and request center functionality
+
+### Phase 5: Deployment & Optimization
+- Implement impact tracker with ROI statistics and usage analytics
+- Optimize performance for 50+ concurrent project support
+- Conduct comprehensive security audit and penetration testing
+- Deploy to production environment with monitoring and alerting
+- Create AI system handbook generator and client training materials
+
+## 5. Proposed Technical Architecture
+
+### 5.1. Key Technology Stack
+- **Frontend:** React.js with TypeScript for type safety and modern UI components
+- **Backend:** Python FastAPI for high-performance API development with automatic documentation
+- **Database:** PostgreSQL for relational data with Redis for caching and session management
+- **AI/ML:** OpenAI GPT-4 API for text processing, Claude for complex reasoning tasks
+- **Authentication:** Auth0 or Firebase Auth for secure user management
+- **File Storage:** AWS S3 for document storage with CloudFront CDN
+- **Real-time:** WebSockets for live updates and collaboration features
+- **Infrastructure:** Docker containerization with AWS ECS for deployment
+
+### 5.2. Architectural Layers/Pattern Overview
+- **Frontend Layer:** React SPA with responsive design, state management via Redux Toolkit, real-time updates via WebSocket
+- **API Gateway Layer:** FastAPI handling authentication, rate limiting, request routing, and response formatting
+- **Business Logic Layer:** Service classes containing core business rules, AI processing logic, and integration orchestration
+- **Integration Layer:** Dedicated modules for each external service (Read.ai, Slack, Notion, Google APIs) with retry and error handling
+- **Data Access Layer:** SQLAlchemy ORM with repository pattern for database operations and caching strategies
+- **AI Processing Layer:** Dedicated service for AI operations including prompt engineering, response processing, and context management
+
+### 5.3. Integration Strategy
+- **Read.ai Integration:** OAuth-based connection for meeting transcript access with webhook support for real-time updates
+- **Tool Integrations:** API-based connections with Slack, Notion, and Google Workspace using official SDKs
+- **External References:** Link-based approach maintaining data in source systems while providing unified access through portal
+- **Real-time Sync:** Event-driven architecture using webhooks and polling for data consistency across integrated systems
+
+## 6. High-Level Testing Strategy
+
+- **Unit Testing:** Comprehensive coverage for all business logic using pytest with minimum 90% code coverage
+- **Integration Testing:** Focus on API endpoints, database operations, and external service integrations using test databases
+- **End-to-End Testing:** Critical user workflows tested with Playwright covering proposal generation, client collaboration, and project tracking
+- **AI Testing:** Specialized testing for AI responses including prompt validation, response quality assessment, and fallback scenarios
+- **Security Testing:** Regular security scans, penetration testing, and vulnerability assessments for client data protection
+- **User Acceptance Testing:** Conducted with JDA team and select clients at end of each major phase
+
+## 7. Key Dependencies & Tools (Project-Level)
+
+**External APIs/Services:**
+- Read.ai API for meeting transcription access
+- OpenAI GPT-4 API for text processing and summarization
+- Anthropic Claude API for complex reasoning and analysis
+- Slack API for team collaboration integration
+- Notion API for document and knowledge base integration
+- Google Workspace APIs (Drive, Docs, Sheets) for file management
+
+**Development & Deployment Tools:**
+- AWS cloud services (ECS, S3, CloudFront, RDS)
+- Docker for containerization and development environment consistency
+- GitHub Actions for CI/CD pipeline automation
+- Figma for UI/UX design and client mockup creation
+
+**Internal Resources:**
+- JDA's existing client database and project templates
+- Current tool workflows and integration requirements
+- Client feedback from existing project management processes
+
+## 8. Initial Risk Considerations (Project-Level)
+
+1. **AI API Dependency Risk:** Over-reliance on external AI services may impact functionality
+   - **Mitigation:** Implement multiple AI provider support, local fallback options, and API rate limit management
+
+2. **Client Adoption Risk:** Non-technical clients may struggle with portal adoption despite user-friendly design
+   - **Mitigation:** Extensive user testing, progressive onboarding, dedicated client success support, and hybrid workflow options
+
+3. **Integration Complexity Risk:** External tool APIs may change or become unreliable
+   - **Mitigation:** Build robust error handling, maintain integration abstraction layers, and develop offline functionality
+
+4. **Data Security Risk:** Handling sensitive client data across multiple integrations increases security surface
+   - **Mitigation:** Implement end-to-end encryption, regular security audits, compliance with data protection standards
+
+5. **Scope Creep Risk:** Complex project with multiple stakeholders may lead to feature expansion
+   - **Mitigation:** Strict adherence to phase-based development, regular scope validation using phase objective validation rules
+
+6. **Performance Risk:** Portal may not scale to 50+ concurrent projects as required
+   - **Mitigation:** Performance testing throughout development, scalable architecture design, and cloud auto-scaling implementation
+
+---
+This Project Overview document serves as the foundational guide for the AI Executor (Cursor) and stakeholders throughout the lifecycle of the JDA AI-Guided Project Portal project. It will be referenced and updated as the project evolves through its systematic development phases.
+

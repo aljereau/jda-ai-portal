@@ -1,0 +1,134 @@
+---
+title: Python Code PEP 8 Compliance
+description: Enforces adherence to PEP 8 style guidelines for Python code.
+tags: python, code-quality, style-guide, pep8, linting, readability
+---
+
+# Cursor Rule Definition: Python Code PEP 8 Compliance
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "code-quality-pep8-python-001"
+description: "All Python code generated or modified must adhere to PEP 8 style guidelines."
+severity: "WARNING"
+globs:
+  - "**/*.py"
+alwaysApply: false
+tags:
+  - python
+  - pep8
+  - style-guide
+  - linting
+  - code-quality
+relatedRules:
+  - dev-workflow-master-001
+  - code-quality-typehints-python-001
+  - code-docstring-standard-python-001
+autoFixable: "AUTO_APPLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure Python code follows consistent, readable, and standard styling as defined by PEP 8.
+
+**Rationale/Benefit:**  
+Improves readability, helps enforce best practices, and reduces errors caused by inconsistent formatting. Tools like IDEs and static analyzers rely on standard formatting for features and warnings.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. All Python code must **pass a PEP 8 linter** or be auto-formatted (e.g., Black, autopep8).  
+2. Key PEP 8 rules enforced include:
+   - 4-space indentation  
+   - Line length (79–100 chars per project rules)  
+   - Proper blank lines around classes/functions  
+   - Import grouping (standard → third-party → local)  
+   - Whitespace rules  
+   - Consistent naming: `snake_case` for variables/functions, `CapWords` for classes  
+3. Code must be formatted using a consistent tool (e.g., `black`) before commit.  
+4. If a formatter isn't used, the AI must resolve all issues flagged by the linter.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+```python
+import os
+import sys
+
+MY_CONSTANT = "Some Value"
+
+def my_cool_function(param_one: str, param_two: int = 0) -> bool:
+    """This is a compliant docstring."""
+    if param_two > 0:
+        print(f"{param_one} repeated {param_two} times.")
+        return True
+    return False
+
+
+class MyClass:
+    """This is a class docstring."""
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def greet(self):
+        print(f"Hello, {self.name}")
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+```python
+def  bad_format( arg1,arg2):
+  if arg1==arg2 : 
+   return True
+  else:
+        return  False
+```
+
+```python
+MYCONSTANT = "TooLong"
+
+def CalculateValuesForThisVerySpecificScenarioAndOutputThem(inputDataValueThatIsAlsoVeryLong, anotherParameterThatMakesTheLineExceedTheLimit):
+    pass
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Code fails linting or formatting check.
+
+**Suggested Fix Description:**  
+"`[file_path]` does not comply with PEP 8 (Rule @code-quality-pep8-python-001.mdc). Attempting to auto-format using `black` or `autopep8`."
+
+**Auto-Fix Logic:**  
+1. Run formatter (e.g., `black file.py`)  
+2. Re-run linter to verify fix  
+3. Manually correct any remaining issues if auto-formatting doesn't solve them
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Related to: [PEP 8](https://peps.python.org/pep-0008/)  
+- Tools: Flake8, Pylint, Black, autopep8
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

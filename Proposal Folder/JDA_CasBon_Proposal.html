@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JDA Solution × Cas Bon — Custom AI Deployment Proposal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: rgb(255, 255, 255);
+            --text-primary: rgb(45, 45, 43);
+            --accent-warm: rgb(76, 93, 89);
+            --text-light: rgba(45, 45, 43, 0.6);
+            --text-medium: rgba(45, 45, 43, 0.8);
+            --border-light: rgba(76, 93, 89, 0.2);
+            --bg-subtle: rgb(249, 250, 251);
+            --bg-card: rgb(248, 249, 250);
+            --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --shadow-emphasis: 0 8px 32px rgba(0, 0, 0, 0.16);
+        }
+        
+        body {
+            font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 25mm 20mm;
+        }
+        
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding-bottom: 50px;
+            border-bottom: 3px solid var(--border-light);
+        }
+        
+        .brain-emoji {
+            font-size: 64px;
+            margin-bottom: 30px;
+            display: block;
+        }
+        
+        .main-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .subtitle {
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        
+        .tagline {
+            font-family: 'Raleway', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--accent-warm);
+            font-style: normal;
+        }
+        
+        /* Section Styling */
+        .section {
+            margin-bottom: 60px;
+            padding-bottom: 50px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--accent-warm);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.3;
+            color: var(--text-primary);
+        }
+        
+        .overview-text {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-medium);
+            margin-bottom: 25px;
+        }
+        
+        .highlight-box {
+            background: var(--bg-subtle);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-warm);
+            margin: 25px 0;
+            font-weight: 600;
+        }
+        
+        .value-highlight {
+            background: linear-gradient(135deg, var(--accent-warm), rgba(76, 93, 89, 0.8));
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 17px;
+        }
+        
+        .phase-intro {
+            background: var(--bg-subtle);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 3px solid var(--accent-warm);
+        }
+        
+        .key-benefit {
+            background: rgba(76, 93, 89, 0.1);
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 3px solid var(--accent-warm);
+            font-style: italic;
+        }
+        
+        .cost-header {
+            background: var(--accent-warm);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .price-large {
+            font-family: 'Raleway', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent-warm);
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px 0;
+            border-top: 2px solid var(--border-light);
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .subsection-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+            color: var(--text-primary);
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .deliverables-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .deliverables-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .deliverables-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .deliverable-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .deliverable-price {
+            font-weight: 700;
+            color: var(--accent-warm);
+            float: right;
+            font-size: 16px;
+        }
+        
+        .deliverable-desc {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            clear: both;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .feature-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-warm);
+            font-weight: 800;
+            font-size: 18px;
+        }
+        
+        .support-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .support-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 25px;
+        }
+        
+        .support-card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .support-price {
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-warm);
+            margin-bottom: 15px;
+        }
+        
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .pricing-table th {
+            background: var(--accent-warm);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .pricing-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 15px;
+        }
+        
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .pricing-table tr:nth-child(even) {
+            background: var(--bg-subtle);
+        }
+        
+        .summary-box {
+            background: var(--accent-warm);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .summary-box h3 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .summary-box p {
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        
+        /* Print optimization */
+        @media print {
+            @page {
+                margin: 0;
+                size: A4;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            html {
+                width: 210mm;
+                height: 297mm;
+            }
+            
+            body {
+                font-size: 13px;
+                line-height: 1.5;
+                margin: 30mm 25mm 35mm 25mm !important;
+                padding: 0 !important;
+                width: 160mm !important;
+                background: white !important;
+                box-sizing: border-box;
+                min-height: calc(297mm - 65mm);
+            }
+            
+            .header {
+                margin-top: 0;
+                margin-bottom: 40px;
+                padding-top: 30mm;
+                padding-bottom: 25px;
+                border-bottom: 2px solid var(--border-light) !important;
+                text-align: center;
+                page-break-after: always;
+            }
+            
+            .brain-emoji {
+                font-size: 48px;
+                margin-bottom: 20px;
+            }
+            
+            .main-title {
+                font-size: 32px;
+                margin-bottom: 12px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+                margin-bottom: 18px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+            }
+            
+            .section {
+                margin-bottom: 35px;
+                padding-bottom: 25px;
+                page-break-inside: avoid;
+                min-height: 100px;
+            }
+            
+            .section:nth-child(3) { /* Phase 1 */
+                page-break-before: always;
+            }
+            
+            .section:nth-child(4) { /* Phase 2&3 */
+                page-break-before: always;
+            }
+            
+            .section:nth-child(5) { /* Support */
+                page-break-before: always;
+            }
+            
+            .section-title {
+                font-size: 26px;
+                margin-bottom: 20px;
+                page-break-after: avoid;
+            }
+            
+            .section-number {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+            
+            .cost-header {
+                font-size: 16px;
+                padding: 12px 20px;
+                margin-bottom: 20px;
+                background: var(--accent-warm) !important;
+                color: white !important;
+                page-break-after: avoid;
+            }
+            
+            .subsection-title {
+                font-size: 18px;
+                margin: 25px 0 15px 0;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--border-light) !important;
+                page-break-after: avoid;
+            }
+            
+            .deliverables-list {
+                margin: 20px 0;
+                page-break-inside: avoid;
+            }
+            
+            .deliverables-list li {
+                padding: 12px 0;
+                border-bottom: 1px solid var(--border-light) !important;
+                page-break-inside: avoid;
+            }
+            
+            .deliverable-title {
+                font-size: 15px;
+                margin-bottom: 6px;
+                font-weight: 700;
+            }
+            
+            .deliverable-price {
+                font-size: 15px;
+                font-weight: 700;
+            }
+            
+            .deliverable-desc {
+                font-size: 13px;
+                line-height: 1.4;
+            }
+            
+            .phase-intro, .key-benefit, .value-highlight {
+                padding: 15px 20px;
+                margin: 15px 0;
+                background: var(--bg-subtle) !important;
+                border-left: 3px solid var(--accent-warm) !important;
+                page-break-inside: avoid;
+                font-size: 14px;
+            }
+            
+            .value-highlight {
+                background: var(--accent-warm) !important;
+                color: white !important;
+                text-align: center;
+            }
+            
+            .support-grid {
+                display: block;
+                page-break-inside: avoid;
+            }
+            
+            .support-card {
+                margin-bottom: 15px;
+                padding: 15px;
+                background: var(--bg-subtle) !important;
+                border: 1px solid var(--border-light) !important;
+                page-break-inside: avoid;
+            }
+            
+            .support-price {
+                font-size: 18px;
+            }
+            
+            .pricing-table {
+                margin: 15px 0;
+                font-size: 12px;
+                page-break-inside: avoid;
+            }
+            
+            .pricing-table th {
+                background: var(--accent-warm) !important;
+                color: white !important;
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .pricing-table td {
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .summary-box {
+                background: var(--accent-warm) !important;
+                color: white !important;
+                padding: 20px;
+                text-align: center;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <span class="brain-emoji">🧠</span>
+        <h1 class="main-title">JDA Solution × Cas Bon</h1>
+        <h2 class="subtitle">Custom AI Deployment Proposal</h2>
+        <p class="tagline">Private AI systems tailored to your workflows. Built once. Yours to own.</p>
+    </header>
+
+    <!-- Section 1: Overview -->
+    <section class="section">
+        <div class="section-number">1</div>
+        <h2 class="section-title">Overview</h2>
+        <p class="overview-text">
+            JDA Solution builds private, on-premise AI systems designed to streamline internal workflows, 
+            automate repetitive tasks, and extract insights from fragmented operational data. This proposal 
+            outlines a phased approach to scope, validate, and deploy a custom AI system based on your team's actual work.
+        </p>
+        
+        <div class="value-highlight">
+            <strong>You own the outputs</strong> — All systems are deployed in your environment. Our role is to help you design, build, and maintain them.
+        </div>
+        
+        <div class="key-benefit">
+            <strong>Business-First Approach:</strong> We build systems that solve real problems and deliver measurable results.
+        </div>
+    </section>
+
+    <!-- Section 2: Phase 1 -->
+    <section class="section">
+        <div class="section-number">2</div>
+        <h2 class="section-title">Phase 1 — Discovery & System Blueprint</h2>
+        
+        <div class="cost-header">Fixed Cost: €3,500</div>
+        
+        <div class="phase-intro">
+            <p style="margin: 0; font-weight: 500;">
+                Discovery phase with <strong>tangible deliverables</strong> — we map your workflows, assess your infrastructure, 
+                and build working prototypes.
+            </p>
+        </div>
+        
+        <div class="key-benefit">
+            <strong>What You Get:</strong> Clear system blueprint, working AI demos, and complete roadmap for implementation.
+        </div>
+
+        <h3 class="subsection-title">🔹 Included Upfront </h3>
+        <ul class="deliverables-list">
+            <li>
+                <div class="deliverable-title">Custom Dashboard Mock-Up</div>
+                <div class="deliverable-desc">
+                    A visual prototype reflecting how the AI system would interact with your current data/tools.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Workflow Analysis Report</div>
+                <div class="deliverable-desc">
+                    Breakdown of your team's current process structure, pain points, and automation opportunities.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">AI Readiness Assessment</div>
+                <div class="deliverable-desc">
+                    A review of your current internal setup — including workflows, data structures, tools in use, 
+                    hardware environment, and infrastructure — to identify what's needed for smooth AI deployment 
+                    and where it can deliver value fastest.
+                </div>
+            </li>
+        </ul>
+
+        <h3 class="subsection-title">🔸 Paid Deliverables</h3>
+        <ul class="deliverables-list">
+            <li>
+                <div class="deliverable-title">Sample AI Flows <span class="deliverable-price">€1,500</span></div>
+                <div class="deliverable-desc">
+                    Demo flows (e.g. voice-to-text → summary → anomaly detection) delivered in a live session and shared prototype.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Process Mapping Workshop <span class="deliverable-price">€1,250</span></div>
+                <div class="deliverable-desc">
+                    One interactive session with your team to map undocumented workflows and identify key intervention points.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Data Formatting & Setup <span class="deliverable-price">€750</span></div>
+                <div class="deliverable-desc">
+                    Preparation of historical data for AI input (e.g. project data, financials, internal docs).
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Section 3: Phase 2 & 3 -->
+    <section class="section">
+        <div class="section-number">3</div>
+        <h2 class="section-title">Phase 2 & 3 — Development & Rollout</h2>
+        
+        <div class="cost-header" style="background: var(--text-primary);">Development & Rollout: €50,000 – €70,000</div>
+        <div class="key-benefit" style="text-align: center; border-left: none; background: rgba(76, 93, 89, 0.05);">
+            <strong>Fixed pricing:</strong> Confirmed after Phase 1 discovery.
+        </div>
+        
+        <div class="phase-intro">
+            <p style="margin: 0; font-weight: 500;">
+                After the Discovery Phase, you'll receive <strong>fixed pricing and a detailed scope</strong> for the complete system implementation.
+            </p>
+        </div>
+        
+        <h3 class="subsection-title">What these phases include:</h3>
+        <ul class="deliverables-list">
+            <li>
+                <div class="deliverable-title">MVP Development</div>
+                <div class="deliverable-desc">
+                    Core AI workflows with interface, automation logic, and basic monitoring.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">On-Prem Deployment</div>
+                <div class="deliverable-desc">
+                    Integration with your tools and infrastructure (or secure hybrid deployment).
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Security Layer</div>
+                <div class="deliverable-desc">
+                    Permissions, encryption, audit logs.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Language Support</div>
+                <div class="deliverable-desc">
+                    System functions in Dutch, English, Spanish, and Papiamentu.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Advanced Logic & Scaling</div>
+                <div class="deliverable-desc">
+                    Expanding workflows, feedback loops, and optional ERP integrations.
+                </div>
+            </li>
+            <li>
+                <div class="deliverable-title">Support During Rollout</div>
+                <div class="deliverable-desc">
+                    Support during onboarding and live usage period.
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Section 4: Post-Launch Support -->
+    <section class="section">
+        <div class="section-number">4</div>
+        <h2 class="section-title">Post-Launch Support Options</h2>
+        
+        <div class="key-benefit">
+            <strong>Complete Ownership:</strong> Your system runs independently. Choose support options that fit your needs.
+        </div>
+        
+        <div class="support-grid">
+            <div class="support-card">
+                <h4>Support Plan</h4>
+                <div class="support-price">€350/month</div>
+                <ul class="feature-list">
+                    <li>Covers infra and maintenance</li>
+                    <li>Faster response if adjustments are needed</li>
+                    <li>Direct contact with our team</li>
+                </ul>
+            </div>
+            
+            <div class="support-card">
+                <h4>On-Demand Support</h4>
+                <p style="margin-bottom: 15px;">If no plan is active, you can request work when needed.</p>
+            </div>
+        </div>
+        
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Prompt tuning or adjustments</td>
+                    <td><strong>€100/hour</strong></td>
+                </tr>
+                <tr>
+                    <td>New AI feature or workflow</td>
+                    <td><strong>Priced on request</strong></td>
+                </tr>
+                <tr>
+                    <td>System update or redeployment</td>
+                    <td><strong>€250–€500 depending on scope</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 5: Payment Structure -->
+    <section class="section">
+        <div class="section-number">5</div>
+        <h2 class="section-title">Payment Structure</h2>
+        
+        <div class="key-benefit">
+            <strong>Straightforward Investment:</strong> Pay €3,500 for discovery, then get fixed pricing for your complete system.
+        </div>
+        
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>Milestone</th>
+                    <th>Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Phase 1 (Discovery)</td>
+                    <td><strong>€3,500 (fixed)</strong></td>
+                </tr>
+                <tr>
+                    <td>Final pricing for future phases will be confirmed after Discovery</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 6: Summary -->
+    <section class="section">
+        <div class="section-number">6</div>
+        <h2 class="section-title">Summary</h2>
+        
+        <div class="phase-intro">
+            <p style="margin: 0 0 15px 0; font-weight: 500;">
+                We approach AI implementation as <strong>infrastructure</strong> — something you own, shaped around how your team works, 
+                and built to evolve when needed.
+            </p>
+        </div>
+        
+        <div class="summary-box">
+            <strong>Let's Build Your System</strong><br>
+            Ready to start? We'll begin with the Discovery Phase and schedule your first workshop.
+        </div>
+    </section>
+
+</body>
+</html>

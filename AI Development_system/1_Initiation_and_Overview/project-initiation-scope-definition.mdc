@@ -1,0 +1,115 @@
+---
+title: Project Initiation & Scope Definition
+description: A template to define and scope a new project, feature, expansion, or bug fix before detailed planning. This is the first step in the AI-driven development process.
+tags: project-initiation, scoping, requirements, feature-definition, bug-report, planning, ideation, discovery
+---
+
+# Project Initiation & Scope Definition: [Brief Title of Initiative]
+
+## 1. Initiative Overview
+
+### 1.1. Type of Initiative
+*(AI Action: Select one or more based on discussion, and elaborate below. User to confirm.)*
+-   [ ] **New Project/Application:** (Building something from scratch)
+-   [ ] **New Major Feature:** (Adding significant new functionality to an existing project)
+-   [ ] **Feature Expansion/Enhancement:** (Improving or adding to an existing feature)
+-   [ ] **Bug Fix:** (Addressing a defect in existing functionality)
+-   [ ] **Refactoring/Technical Debt Reduction:** (Improving code quality, performance, or architecture without new user-facing features)
+-   [ ] **Research/Proof of Concept (PoC):** (Exploring feasibility or a new technology)
+-   **Elaboration:** [AI to summarize or User to provide: Briefly describe the nature of this initiative based on discussion.]
+
+### 1.2. Initiative Statement / Problem to Solve
+*(AI Action: Formulate this statement based on discussion. User to confirm.)*
+-   [e.g., "To develop a new 'User Profile Management' module for the existing 'Customer Portal' application, enabling users to manage their personal information and preferences." OR "To resolve a critical bug (Issue #XYZ) where the 'Export to CSV' function in the 'Reporting Module' corrupts data for reports exceeding 1,000 rows, impacting data analysis capabilities." OR "To conduct a PoC for integrating a real-time collaborative editing feature using [Technology X] into the 'Document Editor' to assess technical feasibility and user experience benefits."]*
+
+### 1.3. Existing Project Context (If Applicable)
+*(AI Action: Gather this information if the initiative is not a brand new project.)*
+-   **Project Name:** [Name of the existing project, if this is not a new project]
+-   **Relevant Modules/Components:** [Specific parts of the existing project that will be affected, interacted with, or where the bug resides]
+-   **Link to Existing Project Overview (if any):** `@[Existing-Project-Overview.mdc]`
+-   **Current State/Background:** [AI to summarize or User to provide: Briefly describe the current situation or background leading to this initiative.]
+
+## 2. Goals & Objectives
+
+### 2.1. Primary Goal(s)
+*(AI Action: Elicit and list the main desired outcomes.)*
+-   [Goal 1, e.g., "Enable self-service profile management for all registered users."]
+-   [Goal 2, e.g., "Ensure reliable CSV export functionality for large datasets."]
+-   [Goal 3, e.g., "Determine if [Technology X] is a viable solution for real-time collaboration."]
+
+### 2.2. Key Objectives / Success Criteria
+*(AI Action: Elicit specific, measurable, achievable, relevant, time-bound (SMART-er) objectives where possible. How will success be measured?)*
+1.  [Objective/Criterion 1, e.g., "Users can successfully create, view, and update their first name, last name, email, and profile picture via the new UI by [Target Date/End of Phase X]."]
+2.  [Objective/Criterion 2, e.g., "The 'Export to CSV' function successfully processes and exports datasets of up to 50,000 rows without data corruption or timeouts, verified by [Test Method]."]
+3.  [Objective/Criterion 3, e.g., "The PoC successfully demonstrates concurrent text editing by two simulated users on a shared document with updates visible in under 500ms."]
+4.  [Objective/Criterion 4, e.g., "A documented summary of PoC findings, including performance metrics and integration challenges, is produced."]
+5.  (Add more as needed)
+
+## 3. Scope Definition
+
+### 3.1. In Scope (Key Features/Deliverables/Fixes)
+*(AI Action: Elicit and list specific items that ARE part of this initiative.)*
+-   [In-scope item 1, e.g., "Development of UI screens for viewing and editing user profile fields (name, email, avatar)."]
+-   [In-scope item 2, e.g., "Backend API endpoints for `GET /user/profile`, `PUT /user/profile`."]
+-   [In-scope item 3, e.g., "Correction of the data truncation logic in `csv_exporter.py`."]
+-   [If Bug Fix: Specific bug behavior to be addressed, steps to reproduce the bug.]
+
+### 3.2. Out of Scope
+*(AI Action: Elicit and list items explicitly NOT part of this initiative to prevent scope creep.)*
+-   [Out-of-scope item 1, e.g., "Password change functionality (will be a separate feature)."]
+-   [Out-of-scope item 2, e.g., "Export to PDF format."]
+-   [Out-of-scope item 3, e.g., "Full user interface for the PoC chat feature (command-line or basic UI is sufficient)."]
+
+### 3.3. Assumptions
+*(AI Action: Elicit and list key assumptions.)*
+-   [Assumption 1, e.g., "The existing authentication service (`AuthService_v2`) can be used without modification."]
+-   [Assumption 2, e.g., "The database schema can be extended to include a 'profile_picture_url' field in the 'users' table."]
+-   [Assumption 3, e.g., "The root cause of the CSV bug is within the `generate_row_data()` function and not an underlying library issue."]
+
+## 4. Requirements & Constraints (High-Level)
+
+### 4.1. Key Functional Requirements (If applicable)
+*(AI Action: Elicit core functionalities.)*
+-   [FR1: e.g., "The system **shall** allow an authenticated user to view their own profile information."]
+-   [FR2: e.g., "The system **shall** allow an authenticated user to update their first name, last name, and email address."]
+-   [FR3: e.g., "The CSV export **shall** correctly handle special characters (commas, quotes, newlines) within data fields."]
+
+### 4.2. Key Non-Functional Requirements (NFRs) (If applicable)
+*(AI Action: Elicit critical quality attributes.)*
+-   [NFR1 (Performance): e.g., "Saving profile updates must complete within 1 second under normal load."]
+-   [NFR2 (Security): e.g., "Profile picture uploads must be scanned for malicious content."]
+-   [NFR3 (Usability): e.g., "The bug fix must not alter the existing user workflow for initiating an export."]
+
+### 4.3. Key Technical Constraints or Considerations
+*(AI Action: Elicit technical boundaries or preferences.)*
+-   [Constraint 1, e.g., "The new feature must be implemented using Python 3.10+ and the existing Flask framework."]
+-   [Constraint 2, e.g., "The fix for the CSV export bug must be contained within the `reporting_module` and not require changes to other services."]
+-   [Constraint 3, e.g., "The PoC should prioritize standard WebSockets over proprietary libraries for initial exploration."]
+
+## 5. Stakeholders & Target Users (If applicable)
+
+*(AI Action: Identify relevant parties.)*
+-   **Primary Users/Audience:** [Who will directly use or benefit from this (e.g., All registered platform users, Data Analysts, Internal Dev Team for PoC)?]
+-   **Key Stakeholders:** [Who has a vested interest in the outcome (e.g., Product Manager for feature, QA Lead for bug fix, R&D Lead for PoC)?]
+
+## 6. Next Steps & Proposed Path Forward (AI to Propose, User to Confirm)
+
+*(AI Action: Based on the "Type of Initiative" and information gathered, propose the most logical next step in the AI-Driven Development System.)*
+
+-   **Proposed Path:**
+    *(AI will select and tailor ONE of the following based on Section 1.1 and discussion)*
+    -   **If New Project:** "Based on our discussion, this is a new project. The recommended next step is to create a comprehensive project plan.
+        **AI Action:** Proceed to create `@[Project-Name]-Project-Overview.mdc` using the `@Project Overview Template.mdc`, incorporating the goals, scope, and high-level requirements defined here."
+    -   **If New Major Feature/Expansion on Existing Project:** "This initiative adds significant functionality to `@[Existing-Project-Name]`. The recommended next step is to define a dedicated development phase for this feature.
+        **AI Action:** First, ensure `@[Existing-Project-Name]-Project-Overview.mdc` is updated to include this new phase. Then, proceed to create a detailed phase plan: `@[Feature-Phase-Name]-Definition.mdc` using the `@Enhanced Project Phase Template.mdc`, detailing the objectives, tasks, and deliverables for implementing '[Brief Title of Initiative]'."
+    -   **If Bug Fix:** "This is a bug fix for `@[Existing-Project-Name]`, primarily affecting `@[Relevant Module/Component]`. The recommended next step is to proceed with debugging and implementation.
+        **AI Action:** Initiate the debugging process using the methodologies outlined in `@one-shot-debugging-guarantee-system-guide.mdc`. Document findings, the fix, and validation in a dedicated section within `@[Relevant-Phase/Module]-Progress.mdc` (if applicable) or create a new `Bugfix-[IssueID/BriefTitle]-Progress.mdc`. A full new Phase Definition is likely not required unless the fix is exceptionally large or involves significant refactoring."
+    -   **If Refactoring/Technical Debt Reduction:** "This initiative focuses on refactoring `@[Area_To_Refactor]` in `@[Existing-Project-Name]`. The recommended next step is to plan this as a specific development phase.
+        **AI Action:** Create a detailed phase plan: `Refactoring-[Area_To_Refactor]-Definition.mdc` using the `@Enhanced Project Phase Template.mdc`, outlining the refactoring goals, tasks (e.g., identify areas, apply patterns, test), and validation criteria."
+    -   **If Research/Proof of Concept (PoC):** "This is a research/PoC initiative for '[Brief Title of Initiative]'. The recommended next step is to plan this as a specific exploratory phase.
+        **AI Action:** Create a detailed phase plan: `PoC-[Topic]-Definition.mdc` using the `@Enhanced Project Phase Template.mdc`, focusing on research tasks, experimentation, and defining clear deliverables (e.g., a summary report, a small working demo, performance benchmarks)."
+
+-   **Key Information to Carry Forward:** [AI to list critical pieces of information from this document that need to be explicitly included or considered in the next planning document or step. e.g., "Key success criterion: 'X'. Technical constraint: 'Y'."]
+
+---
+**AI Action Required by User:** Please review the information above. Once you confirm its accuracy and agree with the "Proposed Path," I will proceed accordingly or await further instructions for modification.

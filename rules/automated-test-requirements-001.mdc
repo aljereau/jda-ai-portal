@@ -1,0 +1,124 @@
+---
+title: Automated Test Requirements for New Code
+description: Mandates the creation of automated tests for new or significantly modified functional code.
+tags: testing, automation, quality-assurance, tdd, bdd, workflow
+---
+
+# Cursor Rule Definition: Automated Test Requirements for New Code
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "automated-test-requirements-001"
+description: "New or significantly modified functional code (e.g., services, controllers, core logic) must be accompanied by automated tests (unit, integration)."
+severity: "ERROR"
+globs:
+  - "**/tests/**/*.py"
+  - "**/test/**/*.js"
+  - "**/__tests__/**/*.ts"
+alwaysApply: true
+tags:
+  - testing
+  - automation
+  - quality
+  - tdd
+  - unit-test
+  - integration-test
+relatedRules:
+  - dev-workflow-master-001
+  - component-validation-before-advancement-001
+  - validation-evidence-documentation-001
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure business logic is reliably tested using automation.
+
+**Rationale/Benefit:**  
+Automated tests catch regressions, speed up iteration, clarify intent, and ensure long-term stability of core logic.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Any new or changed **functional code** must be accompanied by tests.  
+2. Tests must reside in appropriate **test directories**.  
+3. Test coverage must include:
+   - Happy path  
+   - Edge cases  
+   - Error handling  
+4. Follow project coverage standards or aim for **comprehensive** testing.  
+5. Tests must **pass** before marking the code “Validated.”  
+6. Tests should be readable and follow best practices (e.g., Arrange-Act-Assert).
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Python Example:**
+```python
+def test_generate_token_success():
+    service = AuthService()
+    token = service.generate_token("user123")
+    assert isinstance(token, str)
+    assert len(token) > 50
+
+def test_generate_token_invalid_user_id():
+    service = AuthService()
+    with pytest.raises(ValueError):
+        service.generate_token("")
+```
+
+**JavaScript Example:**
+```javascript
+// Testing ProductListController.handleSort()
+test('should sort products alphabetically', () => {
+  const result = controller.handleSort('name');
+  expect(result[0].name).toBe('Apple');
+});
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Example 1:**  
+Creates complex logic but adds no tests.
+
+**Example 2:**  
+Tests only the most basic happy path and ignores invalid or edge input.
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+New/changed logic is committed, but test file is missing or test coverage tool flags insufficient coverage.
+
+**Suggested Fix Description:**  
+"Missing tests for `[function/class]` in `[file_path]`. As per `@automated-test-requirements-001.mdc`, add automated tests covering typical, edge, and failure scenarios."
+
+**Conceptual Logic:**  
+AI suggests test scaffolds based on input/output signatures and known patterns.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Supports: `@component-validation-before-advancement-001.mdc`  
+- Provides evidence for: `@validation-evidence-documentation-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

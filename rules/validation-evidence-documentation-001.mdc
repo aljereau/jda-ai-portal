@@ -1,0 +1,119 @@
+---
+title: Validation Evidence Documentation
+description: Mandates the documentation of evidence for all validation activities.
+tags: validation, testing, documentation, workflow, quality-assurance
+---
+
+# Cursor Rule Definition: Validation Evidence Documentation
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "validation-evidence-documentation-001"
+description: "Concrete evidence of successful validation must be documented for each validated task or component."
+severity: "ERROR"
+globs: ""
+alwaysApply: true
+tags:
+  - validation
+  - documentation
+  - evidence
+  - testing
+  - workflow
+relatedRules:
+  - dev-workflow-master-001
+  - component-validation-before-advancement-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+To ensure every validation activity is backed by clear, verifiable documentation.
+
+**Rationale/Benefit:**  
+Documented evidence ensures traceability, quality assurance, auditing, and understanding by others (human or AI). It also supports future debugging and system trust.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Any task marked "Validated" in the `@AI-Driven Phase Progress Tracking` must include specific documentation in the **Notes/Evidence/Link** field.  
+2. Acceptable evidence types include:
+   - Test report links (e.g., HTML, logs)
+   - Commit SHAs for validation commits
+   - Screenshots or videos
+   - Log excerpts proving correct behavior
+   - Summarized manual verification steps
+   - Output data/files demonstrating success  
+3. Evidence must be **clear and specific** enough for another person or AI to understand how validation was done.  
+4. Vague phrases like "Tested" or "Works" are not acceptable.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1:** Backend validation  
+```text
+| Task ID | Description     | Status    | Notes/Evidence/Link                                                        |
+|---------|-----------------|-----------|----------------------------------------------------------------------------|
+| 3.1     | Implement X     | VALIDATED | Unit tests passed. See @reports/phase3/task3.1_test_report.html. Coverage: 95%. |
+```
+
+**Example 2:** UI validation  
+```text
+| Task ID | Description     | Status    | Notes/Evidence/Link                                                         |
+|---------|-----------------|-----------|------------------------------------------------------------------------------|
+| 4.2     | Render User List| VALIDATED | Screenshot @evidence/phase4/user_list.png. Rendered 5 mock users as spec.   |
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1:** Missing evidence  
+```text
+| Task ID | Description | Status    | Notes/Evidence/Link |
+|---------|-------------|-----------|---------------------|
+| 2.1     | Create Y    | VALIDATED |                     |
+```
+
+**Anti-Example 2:** Vague text  
+```text
+| Task ID | Description | Status    | Notes/Evidence/Link         |
+|---------|-------------|-----------|------------------------------|
+| 2.2     | Develop Z   | VALIDATED | Tested and it works.         |
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Empty or vague Notes/Evidence/Link field when setting status to "Validated".
+
+**Suggested Fix Description:**  
+"Action Blocked: Task `[Task Description]` requires specific validation evidence. Add a test report, log, screenshot, or verification summary."
+
+**Conceptual Logic:**  
+Block status change until proper evidence is added. Prompt for evidence or guide AI to generate it.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Applies to: `@AI-Driven Phase Progress Tracking`  
+- Supports: `@component-validation-before-advancement-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

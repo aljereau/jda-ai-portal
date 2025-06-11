@@ -1,0 +1,152 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Phase Objective Validation Rule
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "phase-objective-validation-001"
+description: "Mandatory validation that all phase development aligns with original phase definition objectives and prevents scope drift."
+severity: "ERROR"
+globs: "project-phases/**/*.mdc"
+alwaysApply: true
+tags: ["phase-management", "validation", "scope-control", "project-governance"]
+relatedRules: ["phase-completion-before-next-001", "scope-drift-prevention-001", "component-validation-before-advancement-001"]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "2024-12-22"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+**Purpose:** This rule ensures that all development work during a phase directly contributes to the original phase objectives defined in the phase definition document, preventing costly scope drift and maintaining project focus.
+
+**Rationale/Benefit:** Scope drift is a major cause of project delays and resource waste. By requiring mandatory validation against original objectives, this rule prevents building the wrong features, ensures deliverables align with planned outcomes, and maintains project timeline integrity. It caught our critical deviation in Phase 1 where we built service layers instead of the planned backtesting framework.
+
+### B. Detailed Requirements & Specifications
+
+**Requirement 1:** Every phase must have a corresponding phase definition document in `/project-phases/` that clearly defines objectives, tasks, and deliverables.
+- **Naming Convention:** `Phase-{N}-{Name}-Definition.mdc`
+- **Content Required:** Objectives, tasks, scope, deliverables, success criteria
+
+**Requirement 2:** Before starting any major development task, validate it against the original phase definition objectives.
+- **Validation Method:** Cross-reference task with defined objectives in phase definition
+- **Documentation:** Record validation in phase progress tracking document
+
+**Requirement 3:** Phase progress tracking must explicitly map completed work to original objectives.
+- **Progress File Location:** `/project-phases/Phase-{N}-{Name}-Progress.mdc`
+- **Mapping Required:** Each completed task must reference which original objective it fulfills
+
+**Requirement 4:** Any deviation from planned objectives requires explicit approval and documentation.
+- **Process:** Document reason for deviation, impact assessment, approval decision
+- **Update:** Modify phase definition if scope change is approved
+
+**Requirement 5:** At 25%, 50%, 75%, and 100% completion milestones, perform objective alignment validation.
+- **Validation Check:** Ensure deliverables match planned objectives
+- **Documentation:** Log validation results in progress tracking
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1: Proper Objective Validation Before Development**
+```
+✅ DO: Validate against original phase definition before building
+// In Phase-1-Foundation-Backtesting-Definition.mdc:
+Objective 4: "Develop Comprehensive Backtesting Framework"
+Task 4.1: "Design backtesting engine architecture"
+
+// Before starting development, confirm:
+"Building backtesting engine directly supports Objective 4 in phase definition"
+```
+
+**Example 2: Proper Progress Mapping**
+```
+✅ DO: Map completed work to original objectives
+// In Phase-1-Foundation-Backtesting-Progress.mdc:
+Task 4.1: COMPLETED - Backtesting engine architecture designed
+✅ Maps to Original Objective 4: "Develop Comprehensive Backtesting Framework"
+Evidence: /src/backtesting/engine.py, architecture docs in /project-architecture/
+```
+
+**Example 3: Proper Deviation Documentation**
+```
+✅ DO: Document and approve scope changes
+Scope Change Request:
+Original Objective: "Basic data collection system"
+Proposed Change: "Advanced service layer architecture with caching"
+Reason: "Technical requirements discovered during implementation"
+Impact: "+2 days development time"
+Approval: "Approved - enhances system reliability"
+Updated Phase Definition: "Yes - v1.1 updated with new scope"
+```
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1: Building Without Objective Validation**
+```
+❌ DON'T: Start development without checking phase definition
+// Built comprehensive service layer without validating against:
+// Phase-1 Objective 4: "Develop Comprehensive Backtesting Framework"
+// This created scope drift - service layer not in original plan
+```
+
+**Anti-Example 2: Progress Tracking Without Objective Mapping**
+```
+❌ DON'T: Track progress without mapping to original objectives
+Completed: "HyperliquidService implemented"
+Completed: "DataStorageService created"
+// Missing: How do these relate to original phase objectives?
+// Result: Can't validate if we're building the right things
+```
+
+**Anti-Example 3: Undocumented Scope Changes**
+```
+❌ DON'T: Change scope without explicit documentation
+// Silently shifted from backtesting framework to service architecture
+// No documentation of why change was made
+// No validation that new direction serves original goals
+```
+
+### E. Automated Correction Logic / Suggestions
+
+**For Violation of Requirement 2 (No Objective Validation):**
+- **Detection Pattern:** Development work started without explicit reference to phase definition objectives
+- **Suggested Fix:** Pause development and perform validation check against original phase definition
+- **Required Action:** Document how current task aligns with phase objectives
+
+**For Violation of Requirement 3 (Missing Objective Mapping):**
+- **Detection Pattern:** Progress entries that don't reference original phase objectives
+- **Suggested Fix:** Add objective mapping to each progress entry
+- **Transformation Logic:** Cross-reference completed work with phase definition objectives
+
+**Example Validation Process:**
+```
+Before Starting Task:
+1. Reference Phase-{N}-{Name}-Definition.mdc
+2. Identify which objective this task supports
+3. Document validation: "Task supports Objective X: [description]"
+4. Proceed with development
+```
+
+### F. File & Rule References
+
+**Related Rules:** 
+- See @phase-completion-before-next-001.mdc for phase completion validation
+- See @scope-drift-prevention-001.mdc for ongoing scope monitoring
+- See @component-validation-before-advancement-001.mdc for component validation
+
+**Phase Definition Template:**
+- All phase definitions must follow structure in @AI Development_system/2_Phase_Planning_and_Execution_Templates/
+
+**Progress Tracking Reference:**
+- Use @AI Development_system/2_Phase_Planning_and_Execution_Templates/ai-driven-phase-progress-tracking-template.mdc
+
+## III. Rule Maintenance Log
+
+**2024-12-22** - v1.0 - Claude-Sonnet-4-Session-20241222: Initial rule creation to address critical scope drift discovered in Phase 1 where we built service architecture instead of planned backtesting framework. This rule establishes mandatory objective validation to prevent similar deviations in future phases.
+

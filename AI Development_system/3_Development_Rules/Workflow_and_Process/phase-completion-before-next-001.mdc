@@ -1,0 +1,94 @@
+---
+title: Phase Completion Before Next Phase Start
+description: Enforces that a phase must be fully completed and validated before the next phase can begin.
+tags: workflow, phasing, project-management, validation, sequence
+---
+
+# Cursor Rule Definition: Phase Completion Before Next Phase Start
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "phase-completion-before-next-001"
+description: "The current development phase must be fully completed (DoD met) before initiating tasks for the subsequent phase."
+severity: "ERROR"
+globs: ""
+alwaysApply: true
+tags:
+  - workflow
+  - phasing
+  - project-management
+  - validation
+relatedRules:
+  - dev-workflow-master-001
+  - phase-task-validation-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Enforce a strict, sequential development process to ensure each phase builds on a solid, validated foundation.
+
+**Rationale/Benefit:**  
+Avoids rework, ensures dependencies are respected, and keeps project momentum clean and structured. Skipping ahead invites chaos.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Before beginning any task in Phase N, Cursor must verify that Phase N-1 is marked **Completed** in its `@AI-Driven Phase Progress Tracking` document.  
+2. "Completed" = all DoD checklist items in Section VI.A of that document are **checked and verified**.  
+3. If Phase N-1 is not completed, AI must **not proceed**. It should halt or raise a blocker notice.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1:** Starting Phase 2  
+- Cursor checks `@Phase-1-Foundation-Progress.mdc`  
+- Section VI.A shows all DoD items as Verified  
+- Status: Completed  
+✅ Cursor begins work on `@Phase-2-Core-UI-Components.mdc`
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1:** Premature Phase 3 work  
+- Task in `@Phase-3-Process-Visualization.mdc` is triggered  
+- Phase 2 checklist has incomplete items (e.g., missing unit tests)  
+❌ Cursor should block task start and flag Phase 2 as incomplete
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Cursor checks Phase N-1's DoD checklist before starting Phase N task.
+
+**Suggested Fix Description:**  
+"Action Blocked: Cannot start tasks for Phase [N_Name]. Phase [N-1_Name] is not yet complete. Please ensure all DoD items in @[Phase-N-1_Name]-Progress.mdc are verified. Current status: [Status from doc]."
+
+**Conceptual Logic:**  
+Halt task. Report the blocker. Wait for completion or override if system allows.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Relies on: `@AI-Driven Phase Progress Tracking`  
+- Phase data from: `@Enhanced Project Phase Template`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

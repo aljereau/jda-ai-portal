@@ -1,0 +1,110 @@
+---
+title: Commit Message Standard Format
+description: Enforces a standardized format for Git commit messages.
+tags: git, version-control, commit-message, workflow, consistency
+---
+
+# Cursor Rule Definition: Commit Message Standard Format
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "commit-standard-format-001"
+description: "Git commit messages must follow the format: [Phase X.Y Task Z] Component: Brief description"
+severity: "WARNING"
+globs: ""
+alwaysApply: true
+tags:
+  - git
+  - commit
+  - workflow
+  - standards
+relatedRules:
+  - dev-workflow-master-001
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure commit messages are consistent, structured, and informative.
+
+**Rationale/Benefit:**  
+Standardized messages help with history tracking, reviews, changelog generation, and understanding context during debugging.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Commit messages must start with `[Phase <PhaseNumber>.<TaskID>]` or `[Phase <PhaseNumber> Task <TaskID>]`.  
+2. Follow the phase reference with a **Component** name, a colon, and a space.  
+3. Write a concise, **imperative** description of the change.  
+4. Subject line must be <= 72 characters (ideal <= 50).  
+5. If more context is needed, add a body separated by a blank line.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+```bash
+# Example 1
+[Phase 1.2] EnvSetup: Configure virtual environment for UI dev
+
+# Example 2
+[Phase 2.3 Task 1] UserAuthService: Implement JWT generation
+
+- Added RSA key loading from config
+- Ensured token expiration
+- Ref: @Phase-2-Core-UI-Components.mdc
+
+# Example 3
+[Phase 3 Task 3.1] LogViewer: Implement real-time log display
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+```bash
+# ❌ Missing phase reference
+AuthService: Fix login bug
+
+# ❌ Vague message
+[Phase 1] Made some changes
+
+# ❌ Incorrect structure
+Did phase 2 stuff for UI (Task 2.2)
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Regex check for:  
+`^\[Phase\s\d+(\.\d+)?(\sTask\s\d+(\.\d+)?)?\]\s[\w.-]+:\s.+`
+
+**Suggested Fix Description:**  
+"The proposed commit message '[proposed-message]' does not follow the format: '[Phase X.Y Task Z] Component: Brief description'. Example: `[Phase 1.1] InitSetup: Add ui_requirements.txt`."
+
+**Conceptual Logic:**  
+Prompt for missing parts and build the message from context. Offer options or suggestions to complete the message correctly.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Task references from: `@AI-Driven Phase Progress Tracking` documents
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

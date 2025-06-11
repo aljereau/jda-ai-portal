@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: jda_portal_postgres
+    environment:
+      POSTGRES_DB: jda_portal_dev
+      POSTGRES_USER: jda_user
+      POSTGRES_PASSWORD: jda_dev_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./project-environments/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - jda_portal_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jda_user -d jda_portal_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Caching and Session Management
+  redis:
+    image: redis:7-alpine
+    container_name: jda_portal_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - jda_portal_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # FastAPI Backend (Development)
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile.dev
+    container_name: jda_portal_backend
+    environment:
+      - DATABASE_URL=postgresql://jda_user:jda_dev_password@postgres:5432/jda_portal_dev
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - SECRET_KEY=dev_secret_key_change_in_production
+      - DEBUG=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/backend:/app
+      - ./project-assets/uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jda_portal_network
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # React Frontend (Development)
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile.dev
+    container_name: jda_portal_frontend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_ENVIRONMENT=development
+      - WDS_SOCKET_HOST=localhost
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src/frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - jda_portal_network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  jda_portal_network:
+    driver: bridge 

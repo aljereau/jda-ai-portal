@@ -1,0 +1,77 @@
+---
+title: Project Orchestration Principles
+description: Guiding principles for AI on how to manage the overall project lifecycle, phase transitions, and utilization of planning documents.
+tags: project-management, workflow, orchestration, ai-behavior, planning
+---
+
+# Cursor Rule Definition: Project Orchestration Principles
+
+## I. Rule Metadata (Frontmatter)
+```yaml
+---
+ruleId: "project-orchestration-principles-001"
+description: "Defines the AI's high-level process for initiating projects, planning phases, executing phases sequentially, and using the defined project templates."
+severity: "INFO"
+globs: ""
+alwaysApply: true
+tags: ["project-management", "orchestration", "workflow", "planning", "ai-process"]
+relatedRules: [
+  "dev-workflow-master-001",
+  "phase-completion-before-next-001"
+]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+### A. Rule Overview & Rationale
+**Purpose:** To provide the AI Executor (Cursor) with a clear, high-level understanding of how to manage the entire project lifecycle from initiation through phase-by-phase execution.
+
+**Rationale/Benefit:** Ensures a consistent and structured approach to project execution, proper utilization of planning documents, and smooth transitions between development phases.
+
+### B. Guiding Principles for Project & Phase Orchestration
+
+**Project Initiation:**
+- Use the @Project Overview Template to document the vision, goals, and initial development phases.
+- Collaborate with the user or use AI to populate it.
+
+**Detailed Phase Planning:**
+- Each phase must have a corresponding detailed plan using @Enhanced Project Phase Template.
+- This includes objectives, tasks, deliverables, scope, risks, and DoD.
+
+**Phase Execution Workflow:**
+- Execute phases sequentially, per @Project Overview Template and @phase-completion-before-next-001.mdc.
+- Only start a phase once the prior one is marked “Completed” in its @AI-Driven Phase Progress Tracking doc.
+- Process:
+  1. Locate @Phase-X-Definition.mdc.
+  2. Initialize @Phase-X-Progress.mdc.
+  3. Execute tasks from the progress doc while following granular rules.
+
+**Adherence to Scope:**
+- Focus on tasks within the current phase.
+- Log or defer out-of-scope tasks (future features, tech debt, etc.).
+
+**Consistent Template Use:**
+- Use @AI-Driven Phase Progress Tracking to document work and DoD.
+- Refer to @Enhanced Project Phase Template as source of truth.
+- Apply all applicable .mdc rules during implementation.
+
+### C. Examples of Compliance (✅ DO)
+- AI creates and uses @Project Overview Template and @Phase-1-Foundation-Definition.mdc.
+- Completes @Phase-1-Foundation-Progress.mdc, then starts @Phase-2-Core-UI-Progress.mdc using its definition.
+
+### D. Examples of Non-Compliance (❌ DON'T)
+- Starts Phase 3 before Phase 2 is completed.
+- Tries to run a phase without a corresponding @[Phase-Name]-Definition.mdc.
+
+### E. Automated Correction Logic / Suggestions
+- AI is blocked by @phase-completion-before-next-001.mdc if it attempts out-of-order execution.
+- If no phase definition exists, AI should say:
+  "To start Phase [X], I need its detailed plan. Please provide or instruct me to create @Phase-X-Definition.mdc using the phase template."
+
+### F. File & Rule References
+- **Governed by:** AI operational logic.
+- **Utilizes:** @Project Overview Template, @Enhanced Project Phase Template, @AI-Driven Phase Progress Tracking Template.
+- **Supported by:** @phase-completion-before-next-001.mdc and granular rules.

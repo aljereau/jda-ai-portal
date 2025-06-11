@@ -1,0 +1,27 @@
+---
+title: Regression Testing Execution
+description: Mandates the execution of a regression test suite at appropriate points (e.g., before merging to main, after major refactoring) to catch unintended side effects.
+tags: testing, regression, quality-assurance, workflow, ci-cd
+---
+
+# Cursor Rule Definition: Regression Testing Execution
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "regression-testing-execution-001"
+description: "A defined regression test suite must be executed and pass before major integrations (e.g., merging to main/develop) or after significant refactoring to ensure existing functionality is not broken."
+severity: "ERROR"
+globs: ["run_regression_tests.sh", "**/e2e_tests/**/*"]
+alwaysApply: true
+tags: ["testing", "regression", "quality", "workflow", "ci-cd"]
+relatedRules: [
+  "dev-workflow-master-001",
+  "pr-mr-required-for-integration-001",
+  "ci-cd-pass-required-for-merge-001"
+]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "2025-05-26"
+```

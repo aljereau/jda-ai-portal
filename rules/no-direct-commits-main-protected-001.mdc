@@ -1,0 +1,113 @@
+---
+title: No Direct Commits to Main/Protected Branches
+description: Prohibits direct commits to 'main' (or other designated protected) branches, enforcing a Pull/Merge Request workflow.
+tags: git, version-control, workflow, branching, quality-gate, collaboration
+---
+
+# Cursor Rule Definition: No Direct Commits to Main/Protected Branches
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "no-direct-commits-main-protected-001"
+description: "Direct commits to 'main', 'master', 'develop' (or other designated protected branches) are prohibited. Changes must be merged via Pull/Merge Requests."
+severity: "ERROR"
+globs: ""
+alwaysApply: true
+tags:
+  - git
+  - workflow
+  - branching
+  - protected-branch
+  - code-review
+  - ci-cd
+relatedRules:
+  - dev-workflow-master-001
+  - branching-strategy-feature-format-001
+  - pr-mr-required-for-merge-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Prevent unreviewed or unsafe changes from being committed directly to stable or integration branches like `main`, `develop`, or `release/*`.
+
+**Rationale/Benefit:**  
+Ensures quality control via code review, CI/CD pipeline triggers, and accountability. Prevents human or AI error from affecting production or staging environments.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Cursor must **never commit directly** to protected branches (`main`, `develop`, etc.).  
+2. Changes must go through a **Pull/Merge Request (PR/MR)** process.  
+3. AI should **create PRs/MRs**, not just request human review. PR should include:
+   - Feature summary  
+   - Task ID reference  
+   - Progress tracker links  
+   - Screenshot/snippet evidence (if applicable)
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+```text
+AI creates feature/phase2-login-ui
+✅ AI creates PR to develop branch
+✅ PR includes summary: "Implements login UI per Phase 2 Task 2.3"
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+```bash
+# ❌ AI commits directly to main
+git checkout main
+git commit -m "Quick fix"
+git push origin main
+```
+
+```bash
+# ❌ AI merges locally then pushes
+git checkout main
+git merge feature/phase1-setup
+git push origin main
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Cursor attempts commit or push on protected branch.
+
+**Fix Logic:**  
+1. Block the operation.  
+2. Prompt the AI to:
+   - Switch to or create a feature branch  
+   - Commit changes there  
+   - Initiate a Pull/Merge Request with proper context
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Respects config for `protectedBranches`  
+- Works with:  
+  - `@branching-strategy-feature-format-001.mdc`  
+  - `@pr-mr-required-for-merge-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

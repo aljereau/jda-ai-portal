@@ -1,0 +1,27 @@
+---
+title: Technical Documentation Update at Milestones
+description: Requires updating relevant technical documentation (e.g., architecture, API docs, design docs) at defined project milestones or phase completions.
+tags: documentation, architecture, api-docs, design-docs, workflow, project-status
+---
+
+# Cursor Rule Definition: Technical Documentation Update at Milestones
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "technical-doc-update-milestones-001"
+description: "Key technical documentation must be reviewed and updated to reflect changes upon completion of significant milestones or phases."
+severity: "WARNING"
+globs: ["docs/architecture/*.md", "docs/api/**/*.yaml", "design_documents/**/*.md"]
+alwaysApply: false
+tags: ["documentation", "architecture", "api", "design", "workflow"]
+relatedRules: ["dev-workflow-master-001", "readme-update-per-phase-001"]
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+```
+Use code with caution.
+...
+III. Rule Maintenance Log
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

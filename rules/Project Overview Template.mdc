@@ -1,0 +1,120 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+title: Project Overview Template
+description: A high-level blueprint for defining a new project, its goals, principles, structure, and phased execution plan, designed for AI-driven development.
+tags: project-management, planning, overview, roadmap, ai-automation, cursor
+---
+
+# [Project Name] - Project Overview & Roadmap
+
+## 1. Project Vision & Goals
+
+### 1.1. Project Statement
+[Provide a concise (1-3 sentences) statement defining the project, its purpose, and the primary problem it solves or value it delivers. e.g., "To develop a [Type of Application] called [Project Name] that allows users to [Core Functionality] by [Key Method/Technology], addressing the need for [User Need/Market Gap]."]
+
+### 1.2. Key Objectives
+*(What are the primary, measurable outcomes this project aims to achieve?)*
+1.  [Objective 1, e.g., "Develop a functional [Core Feature/Module] for [Target Users]."]
+2.  [Objective 2, e.g., "Integrate with [External System/API] to provide [Specific Value]."]
+3.  [Objective 3, e.g., "Achieve a user satisfaction rating of [Target Metric] post-launch."]
+4.  [Objective 4, e.g., "Ensure the system can handle [X] concurrent users/transactions with [Y] performance." (If applicable)]
+5.  (Add more as needed)
+
+### 1.3. Target Audience/Users
+[Describe the primary users of this project/product. e.g., "Musicians and non-technical audio enthusiasts," "Data analysts requiring quick report generation," "Small business owners needing inventory management." This helps guide UI/UX and feature prioritization.]
+
+## 2. Core Principles & Guiding Philosophies
+*(Define the fundamental rules or philosophies that will guide all development decisions for this project.)*
+1.  **[Principle 1, e.g., Backend Integrity]:** [Brief explanation, e.g., "Preserve all existing functionality of [Legacy System/Core Logic] and ensure it remains operational throughout new development."]
+2.  **[Principle 2, e.g., Phased & Iterative Development]:** [Brief explanation, e.g., "Follow a structured, phase-based approach, delivering functional increments and allowing for feedback and adaptation."]
+3.  **[Principle 3, e.g., User-Centric Design]:** [Brief explanation, e.g., "Prioritize simplicity, intuitiveness, and accessibility for the defined [Target Audience]."]
+4.  **[Principle 4, e.g., Separation of Concerns]:** [Brief explanation, e.g., "Maintain clear architectural boundaries between [Layer A, e.g., UI], [Layer B, e.g., Business Logic], and [Layer C, e.g., Data Access]."]
+5.  **[Principle 5, e.g., Comprehensive Documentation]:** [Brief explanation, e.g., "Ensure all phases, components, and APIs are thoroughly documented to support maintainability, onboarding, and AI understanding."]
+6.  **[Principle 6, e.g., Test-Driven Development (TDD) / Behavior-Driven Development (BDD)]:** [Brief explanation, if applicable.]
+7.  (Add more as needed)
+## 3. Project Structure & Governance
+
+### 3.1. Standard Documentation & Workflow
+All project development will adhere to the following standard templates and workflows (AI Executor should reference these for its operations):
+-   **Project Phasing & Planning:** Uses `@Enhanced Project Phase Template` for each defined phase.
+-   **Progress Tracking:** Uses `@AI-Driven Phase Progress Tracking` for each active phase.
+-   **Development Rules & Standards:** Defined in `@Development Rules & Workflow Standards` (This is a separate document you'd create detailing coding standards, commit message formats, PR processes, AI interaction protocols, etc.).
+-   **Documentation Flow & Relationships:** Visualized in `@Documentation Flow & Relationships` (A separate document, perhaps a diagram, showing how all project documents connect).
+
+### 3.2. Progress Tracking Links
+*(This section will be populated by Cursor as phases are initiated, linking to their specific tracking documents.)*
+-   `@[Phase 1 Name] Progress` (Link to the specific progress tracking file for Phase 1)
+-   `@[Phase 2 Name] Progress` (To be created and linked by AI when Phase 1 is complete)
+-   ... (List placeholders for anticipated phases)
+
+## 4. Development Phases
+*(Outline the major phases of the project. For each phase, provide a high-level summary of its goals/key deliverables. Cursor will use the `@Enhanced Project Phase Template` to detail each of these.)*
+
+### @Phase 1: [Phase 1 Name, e.g., Foundation & Core Setup]
+-   [High-level goal 1 for Phase 1, e.g., "Establish development environment and project scaffolding."]
+-   [High-level goal 2 for Phase 1, e.g., "Implement core data models and service abstractions."]
+-   [High-level goal 3 for Phase 1, e.g., "Set up basic authentication and authorization framework."]
+
+### @Phase 2: [Phase 2 Name, e.g., Core Feature Implementation - [Feature A]]
+-   [High-level goal 1 for Phase 2, e.g., "Design and implement UI for [Feature A]."]
+-   [High-level goal 2 for Phase 2, e.g., "Develop backend logic and API endpoints for [Feature A]."]
+-   [High-level goal 3 for Phase 2, e.g., "Integrate [Feature A] with [Dependent System/Module]."]
+
+### @Phase 3: [Phase 3 Name, e.g., Advanced Feature - [Feature B] & Usability Enhancements]
+-   [High-level goal 1 for Phase 3]
+-   [High-level goal 2 for Phase 3]
+
+*(Add more phases as anticipated for the project. Cursor can help break down larger ideas into these phases based on your input.)*
+
+## 5. Proposed Technical Architecture
+*(Provide a high-level overview of the intended technical stack and architecture. This guides Cursor's choices.)*
+
+### 5.1. Key Technology Stack
+-   **Frontend (if applicable):** [e.g., PyQt, React, Vue.js, Angular, Web Components]
+-   **Backend (if applicable):** [e.g., Python (FastAPI/Flask/Django), Node.js (Express), Java (Spring Boot), Go]
+-   **Database(s):** [e.g., PostgreSQL, MongoDB, MySQL, SQLite]
+-   **Key Libraries/Frameworks:** [e.g., SQLAlchemy, Pydantic, Redux, ORM name]
+-   **Infrastructure/Deployment (Initial thoughts):** [e.g., Docker, Kubernetes, AWS Lambda, Vercel, On-Premise]
+
+### 5.2. Architectural Layers/Pattern Overview
+[Briefly describe the intended high-level architecture, e.g.:]
+-   **[e.g., UI Layer]:** [Brief description, e.g., "Responsible for user interaction and presentation, built with [Frontend Tech]."]
+-   **[e.g., API/Controller Layer]:** [Brief description, e.g., "Handles incoming requests, orchestrates business logic, and formats responses."]
+-   **[e.g., Service/Business Logic Layer]:** [Brief description, e.g., "Contains core business rules and application logic, independent of UI or data access concerns."]
+-   **[e.g., Data Access Layer]:** [Brief description, e.g., "Manages interaction with the database(s) using [ORM/Library]."]
+-   **[e.g., Core Engine/Legacy System (if applicable)]:** [Brief description, e.g., "Existing [Language/System] component providing [Core Functionality]."]
+
+### 5.3. Integration Strategy (if applicable)
+[How will new components integrate with existing systems or third-party services? e.g.:]
+-   [e.g., "New UI will communicate with the existing [Backend System] via a newly developed REST API wrapper (Service Layer)."]
+-   [e.g., "Third-party [Service Name] will be integrated using its official SDK via [Specific Module]."]
+
+## 6. High-Level Testing Strategy
+*(Outline the general approach to testing. Specific test plans will be detailed in each phase.)*
+-   **Unit Testing:** [e.g., "All new business logic and utility functions will have comprehensive unit tests using [Testing Framework, e.g., PyTest, Jest]."]
+-   **Integration Testing:** [e.g., "Focus on testing interactions between major components/layers (e.g., API to Service Layer, Service to Data Layer) using [Framework/Method]."]
+-   **End-to-End (E2E) Testing (if applicable):** [e.g., "Key user workflows will be covered by E2E tests using [Tool, e.g., Selenium, Cypress, Playwright]."]
+-   **User Acceptance Testing (UAT):** [e.g., "Will be conducted with [Target Audience/Stakeholders] at the end of [Key Milestone/Phase(s)]."]
+-   **AI-Assisted Testing:** [e.g., "Cursor will be prompted to generate test cases for its generated code and execute them."]
+
+## 7. Key Dependencies & Tools (Project-Level)
+*(List major external dependencies or tools critical for the project, beyond standard development environments. Phase-specific dependencies will be in phase documents.)*
+-   **External APIs/Services:** [e.g., Spotify API, Google Maps API, Stripe SDK]
+-   **Proprietary Libraries/Internal Tools:** [e.g., InternalAuthLib, CompanyDesignSystem]
+-   **Specialized Hardware/Software (if any):** [e.g., Access to specific IoT devices, Licensed software for [Task]]
+-   **UI Design Tools (if applicable):** [e.g., Figma, Adobe XD for mockups/prototypes]
+-   **Project Management/Communication Tools:** [e.g., This Cursor workspace, Slack channel #[ProjectName]]
+
+## 8. Initial Risk Considerations (Project-Level)
+*(Identify high-level risks that could impact the entire project. Phase-specific risks are in phase documents.)*
+1.  **[Risk 1, e.g., Dependency on unstable third-party API]:** Mitigation: [e.g., "Develop abstraction layer, explore alternatives early."]
+2.  **[Risk 2, e.g., Unclear requirements for [Complex Feature X]]:** Mitigation: [e.g., "Schedule dedicated workshops, build PoC in early phase."]
+3.  **[Risk 3, e.g., Resource availability for [Specialized Skill]]:** Mitigation: [e.g., "Identify and secure resources upfront, plan for knowledge transfer."]
+4.  (Add more as needed)
+
+---
+This Project Overview document serves as the foundational guide for the AI Executor (Cursor) and human stakeholders throughout the lifecycle of the [Project Name] project. It will be referenced and updated as the project evolves.

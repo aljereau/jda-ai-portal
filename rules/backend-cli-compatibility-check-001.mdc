@@ -1,0 +1,27 @@
+---
+title: Backend CLI Compatibility Check
+description: Requires verification that existing Command Line Interface (CLI) functionality of the backend remains operational after UI-related changes or service layer additions.
+tags: backend, cli, compatibility, regression, testing, integration
+---
+
+# Cursor Rule Definition: Backend CLI Compatibility Check
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "backend-cli-compatibility-check-001"
+description: "After implementing UI service layers or related changes, existing backend CLI functionality must be tested to ensure it remains fully operational and unaffected."
+severity: "ERROR"
+globs: ["**/cli_tests/*.sh", "**/backend_cli_entrypoint.py"]
+alwaysApply: true
+tags: ["backend", "cli", "regression", "testing", "compatibility", "integration"]
+relatedRules: [
+  "dev-workflow-master-001",
+  "backend-integrity-no-direct-modification-001",
+  "backend-service-layer-wrappers-001"
+]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "2025-05-26"
+```

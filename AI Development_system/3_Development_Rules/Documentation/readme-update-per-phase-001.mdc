@@ -1,0 +1,114 @@
+---
+title: README Update Per Phase Completion
+description: Mandates that the project's main README.md file is updated after the completion of each development phase.
+tags: documentation, readme, workflow, communication, project-status
+---
+
+# Cursor Rule Definition: README Update Per Phase Completion
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "readme-update-per-phase-001"
+description: "The main project README.md must be updated to reflect the project's status and new features upon completion of each phase."
+severity: "WARNING"
+globs:
+  - "README.md"
+alwaysApply: false
+tags:
+  - documentation
+  - readme
+  - workflow
+  - project-status
+relatedRules:
+  - dev-workflow-master-001
+  - phase-completion-before-next-001
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure the README.md remains current and accurately reflects the project’s progress.
+
+**Rationale/Benefit:**  
+Keeps all stakeholders—new devs, users, investors, or AI—up-to-date and aligned. A stale README signals chaos.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. After each phase is completed and validated (DoD met per `@phase-completion-before-next-001.mdc`), README.md **must be updated**.  
+2. Update should include:
+   - New features added during the phase
+   - Changes to status/version
+   - Updated install/build instructions (if needed)
+   - Usage examples
+   - UI screenshots (if applicable)
+   - Links to docs  
+3. AI should base updates on that phase’s deliverables and objectives (`@Enhanced Project Phase Template`).  
+4. README updates must be part of the final phase completion commits.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+```diff
+## Current Status
+-Phase 1: Foundation Complete
++Phase 2: Core UI Components Implemented. Foundation complete.
+
+## Features
+ - Backend playlist extraction
+ - Service layer for backend abstraction
+ - UI error handling and logging
++ - Main application window with basic layout
++ - Playlist input form with URL validation
++ - Settings panel for basic configuration
+```
+
+✅ README is updated and committed as part of Phase 2 closure.
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Anti-Example 1:** No README update  
+Phase 3 is validated, but README still only reflects Phase 2.
+
+**Anti-Example 2:** Vague update  
+README says only: `Phase 1 done.`  
+❌ No mention of what was accomplished or useful info added.
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+AI marks a phase as "Completed" → checks if README was updated in recent commits.
+
+**Suggested Fix Description:**  
+"Phase `[Phase Name]` is complete. As per rule `@readme-update-per-phase-001.mdc`, README.md needs an update. Add new features, current status, usage notes. I can draft it based on the phase deliverables."
+
+**Conceptual Logic:**  
+AI reads the phase summary and produces a suggested diff for README.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Triggered by: `@Enhanced Project Phase Template`  
+- Status check: `@AI-Driven Phase Progress Tracking`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

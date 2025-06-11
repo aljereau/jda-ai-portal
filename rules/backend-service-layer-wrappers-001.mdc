@@ -1,0 +1,123 @@
+---
+title: Backend Service Layer Wrappers
+description: Mandates the creation and use of service layer wrappers for all backend interactions.
+tags: backend, service-layer, abstraction, architecture, integration
+---
+
+# Cursor Rule Definition: Backend Service Layer Wrappers
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "backend-service-layer-wrappers-001"
+description: "All interactions with core backend functionality must be channeled through a dedicated service layer."
+severity: "ERROR"
+globs:
+  - "*/services/**/*.py"
+  - "*/services/**/*.ts"
+alwaysApply: true
+tags:
+  - architecture
+  - service-layer
+  - abstraction
+  - backend-integration
+relatedRules:
+  - dev-workflow-master-001
+  - backend-integrity-no-direct-modification-001
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Decouple UI or new app logic from the core backend by enforcing service layer usage.
+
+**Rationale/Benefit:**  
+- Ensures a stable, well-defined backend interface  
+- Simplifies testing, mocking, and maintenance  
+- Prevents backend dependency leaks into application/UI logic
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Backend functionality must be accessed through service methods in a `/services/` directory.  
+2. UI components or application logic **must not** import or directly call backend code.  
+3. Service functions act as **thin wrappers**, translating formats or facilitating backend calls—not re-implementing logic.  
+4. Design services with consumer needs in mind (e.g., async support, simplified responses).
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+```python
+# spotify_downloader_ui/services/playlist_service.py
+
+from project_core.backend.logic import get_playlist_details_core
+from ..models.ui_playlist import UIPlaylist
+
+class PlaylistService:
+    def get_playlist_for_ui(self, playlist_id: str) -> UIPlaylist:
+        core_data = get_playlist_details_core(playlist_id)
+        return UIPlaylist(id=core_data.id, name=core_data.name, track_count=len(core_data.tracks))
+```
+
+```python
+# spotify_downloader_ui/controllers/main_controller.py
+
+from ..services.playlist_service import PlaylistService
+
+class MainController:
+    def __init__(self):
+        self.playlist_service = PlaylistService()
+
+    def load_playlist(self, playlist_id: str):
+        ui_playlist_data = self.playlist_service.get_playlist_for_ui(playlist_id)
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+```python
+# ❌ DON'T: Direct backend logic import in controller
+
+from project_core.backend.logic import get_playlist_details_core 
+from project_core.backend.models import CorePlaylist
+
+class MainController:
+    def load_playlist(self, playlist_id: str):
+        core_playlist_data: CorePlaylist = get_playlist_details_core(playlist_id)
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+AI detects direct imports or calls from a UI file to backend code within protected globs.
+
+**Suggested Fix Description:**  
+"Direct call to backend module '[backend_module_path]' detected in '[calling_file_path]'. This violates rule `@backend-service-layer-wrappers-001.mdc`. Refactor to use or create a service in the `[project_ui_path]/services/` directory."
+
+**Conceptual Logic:**  
+Cursor should recommend wrapping the backend function inside a service file, then refactor the import and usage in the calling module.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Prerequisite for: `@backend-integrity-no-direct-modification-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

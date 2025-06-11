@@ -1,0 +1,27 @@
+---
+title: Test-Driven Development (TDD) Adherence
+description: Encourages/enforces writing a failing test before writing functional code for new features/units.
+tags: testing, tdd, development-practice, workflow, quality-assurance
+---
+
+# Cursor Rule Definition: Test-Driven Development (TDD) Adherence
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "test-driven-development-adherence-001"
+description: "For new units of functionality (functions, methods), a failing automated test should be written before the implementation code."
+severity: "INFO"
+globs: ["**/*.py", "**/*.js", "**/*.ts"]
+alwaysApply: false
+tags: ["tdd", "testing", "workflow", "development-practice", "quality"]
+relatedRules: ["dev-workflow-master-001", "automated-test-requirements-001"]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+```
+Use code with caution.
+...
+III. Rule Maintenance Log
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

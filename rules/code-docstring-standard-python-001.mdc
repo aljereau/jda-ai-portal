@@ -1,0 +1,141 @@
+---
+title: Python Code Docstring Standard
+description: Enforces a standard format and content for docstrings in Python code.
+tags: python, documentation, docstring, code-quality, readability, pep257
+---
+
+# Cursor Rule Definition: Python Code Docstring Standard
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "code-docstring-standard-python-001"
+description: "All Python modules, classes, functions, and methods must have docstrings following PEP 257 and a consistent style (e.g., Google, NumPy, reStructuredText)."
+severity: "INFO"
+globs:
+  - "**/*.py"
+alwaysApply: false
+tags:
+  - python
+  - documentation
+  - docstring
+  - pep257
+  - code-quality
+relatedRules:
+  - dev-workflow-master-001
+  - code-quality-typehints-python-001
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure internal code documentation via standardized Python docstrings.
+
+**Rationale/Benefit:**  
+Docstrings improve developer experience, documentation quality, and IDE support. They’re runtime-accessible and used by tools like Sphinx, making them essential.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. Every public module, class, function, or method must have a **docstring**.  
+2. Docstring must follow **PEP 257**: short summary, blank line, then details.  
+3. A consistent **style** must be followed project-wide (Google style assumed).  
+4. Google Style Requirements:
+   - Start with a one-line summary
+   - Use `Args:`, `Returns:`, and `Raises:` as needed
+   - List name, type, and description of parameters  
+5. Use proper English grammar and clear writing.
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+```python
+def add_numbers(a: int, b: int) -> int:
+    """Adds two integers and returns the result.
+
+    Args:
+        a: The first integer.
+        b: The second integer.
+
+    Returns:
+        The sum of a and b.
+    """
+    return a + b
+```
+
+```python
+class DataProcessor:
+    """Processes raw data into a structured format."""
+
+    def __init__(self, source_type: str):
+        """Initializes the DataProcessor.
+
+        Args:
+            source_type: The type of data source (e.g., 'csv', 'json').
+        """
+        self.source_type = source_type
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+```python
+# ❌ No docstring
+def calculate_area(radius):
+    return 3.14159 * radius * radius
+
+# ❌ Incomplete docstring
+def get_user(user_id):
+    """finds a user"""
+    pass
+```
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+**Detection Pattern:**  
+Missing or incomplete docstrings. No summary. No `Args:` or `Returns:`.
+
+**Suggested Fix Description:**  
+"`[name]` in `[file_path]` is missing a docstring or doesn't follow the expected docstring format (Google style). Please update it to include a summary, arguments, return values, and exceptions as applicable."
+
+**Conceptual Logic:**  
+Generate a stub based on function signature:
+
+```python
+def my_function(param1: str, param2: int) -> bool:
+    """[summary]
+
+    Args:
+        param1 (str): [description]
+        param2 (int): [description]
+
+    Returns:
+        bool: [description]
+    """
+```
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Based on: PEP 257 (https://peps.python.org/pep-0257/)  
+- Style guide: [Link to your style guide if any]
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

@@ -1,0 +1,117 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+title: AI-Driven Phase Progress Tracking
+description: A template for tracking the progress, status, and outcomes of a defined project phase, designed for primary population and updates by an AI execution agent (e.g., Cursor). To be used with the 'Enhanced Project Phase Template'.
+tags: project-management, tracking, execution, ai-automation, phase, status, cursor
+---
+
+# Phase [Phase Number] Progress: [Phase Name]
+## I. Phase Summary & AI Control
+- **Link to Phase Definition Document:** `@[Phase-Name]-Definition.mdc`
+- **AI Executor ID:** [e.g., Cursor-Session-XYZ, AI-Instance-123]
+- **Overall Phase Status (Managed by AI):** [Not Started | Initializing | In Progress | Blocked | Pending User Input | Error | Awaiting Validation | Completed]
+- **Phase Start Timestamp (Set by AI):** [YYYY-MM-DDTHH:MM:SSZ]
+- **Actual Phase Completion Timestamp (Set by AI):** [YYYY-MM-DDTHH:MM:SSZ]
+- **Last AI Update Timestamp:** [YYYY-MM-DDTHH:MM:SSZ]
+## II. Pre-Execution Checks (AI Validated)
+### A. Prerequisites Verification (from Phase Definition)
+*(AI to verify each prerequisite and log evidence/status)*
+| Prerequisite (from Phase Definition) | AI Verification Status (Pending/Verifying/Verified/Failed/Not Applicable) | AI Verification Timestamp | AI Verification Method & Evidence (e.g., "Checked @[Prev-Phase]-Progress.mdc DoD: Verified", "API Key [KEY_NAME] accessible") |
+| :-------------------------------------------------- | :---------------------------------------------------------------------- | :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------- |
+| [Prerequisite 1 Description] | | | |
+| [Prerequisite 2 Description] | | | |
+| ... | | | |
+**Overall Prerequisites Status (Set by AI):** [Pending | In Progress | All Verified | Failed - See Details]
+### B. Objectives Status (from Phase Definition)
+*(AI to update status based on task/deliverable completion towards each objective)*
+1. **[Objective 1 Description]**: * Status: [Pending / In Progress / Partially Achieved / Achieved / Blocked] * Notes/Supporting Tasks: [List Task IDs contributing to this objective]
+2. **[Objective 2 Description]**: * Status: [Pending / In Progress / Partially Achieved / Achieved / Blocked] * Notes/Supporting Tasks:
+3. ...
+### C. Assumptions Review (from Phase Definition)
+*(AI to review and validate assumptions as work progresses. Update if any are invalidated.)*
+| Assumption (from Phase Definition) | Initial Status (Assumed True) | AI Validation Status (Confirmed/Invalidated/Indeterminate/Not Applicable) | AI Validation Timestamp | Notes & Impact (If Invalidated) |
+| :-------------------------------------------------- | :---------------------------- | :---------------------------------------------------------------------- | :------------------------ | :--------------------------------------------------------------------------------- |
+| [Assumption 1 Description] | Assumed True | | | |
+| [Assumption 2 Description] | Assumed True | | | |
+| ... | | | | |
+**Assumptions Impact Summary (Set by AI if any invalidated):** [e.g., "Assumption X invalidated, potential impact on Task Y. User review advised."]
+## III. Detailed Task Execution Log (AI Populated)
+*(AI to update status and provide evidence for each task from Phase Definition. Adhere to all relevant `.mdc` rules.)*
+### Sub-Goal 1: [Name of Sub-Goal 1 from Phase Definition]
+| Task ID | Description (from Phase Definition) | AI Execution Status (Pending/Queued/Running/Blocked/Requires User Input/Awaiting Validation/Completed/Error/Validated) | AI Start Timestamp | AI Completion Timestamp | AI Action Summary & Output (e.g., "Created file X", "Ran command Y", "Function Z implemented") | Evidence/Links (e.g., File paths, commit SHAs, log snippets, test report URLs, Ref: @validation-evidence-documentation-001.mdc) |
+| :------ | :---------------------------------- | :----------------------------------------------------------------------------------------------------------------- | :----------------- | :---------------------- | :---------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1 | [Task 1.1 Description] | | | | | |
+| 1.2 | [Task 1.2 Description] | | | | | |
+| ... | | | | | | |
+**Sub-Goal 1 AI Status:** [Pending | In Progress | Completed | Error - See Tasks | Validated]
+*(Repeat for all Sub-Goals and Tasks defined in Phase Definition)*
+## IV. Deliverables Status (AI Managed)
+*(AI to track generation/completion and link to deliverables from Phase Definition)*
+| Deliverable (from Phase Definition) | AI Status (Pending/In Progress/Generated/In Review/Completed/Approved/Failed) | AI Completion Timestamp | Link to Deliverable / Evidence of Creation | Notes (e.g., "Awaiting user approval for Deliverable X") |
+| :-------------------------------------------- | :---------------------------------------------------------------------------- | :---------------------- | :----------------------------------------- | :------------------------------------------------------- |
+| [Deliverable 1 Description] | | | | |
+| [Deliverable 2 Description] | | | | |
+| ... | | | | |
+## V. Testing & Validation Log (AI Executed & Logged)
+### A. Testing Criteria Met (from Phase Definition)
+*(AI to execute tests and log results against phase-specific criteria)*
+| Testing Criterion (from Phase Definition) | AI Test Execution Status (Pending/Running Tests/Pass/Fail/Error in Test/Blocked/Not Applicable) | AI Test Execution Timestamp | Link to Test Results/Logs & Evidence of Criterion Met/Failed |
+| :-------------------------------------------- | :-------------------------------------------------------------------------------------------- | :-------------------------- | :----------------------------------------------------------- |
+| [Criterion 1 Description] | | | |
+| [Criterion 2 Description] | | | |
+| ... | | | |
+### B. Key Automated Test Suite Results (AI Triggered)
+- **Unit Test Suite (Ref: @automated-test-requirements-001.mdc):** Status: [Pass/Fail/X Tests Failed] | Coverage: [e.g., 85%] | Report: `@[link_to_unit_test_report]`
+- **Integration Test Suite:** Status: [Pass/Fail/X Tests Failed] | Report: `@[link_to_integration_test_report]`
+- **Regression Test Suite (if run this phase per @regression-testing-execution-001.mdc):** Status: [Pass/Fail] | Report: `@[link_to_regression_report]`
+- **Performance Tests (if run this phase per @performance-test-requirements-001.mdc):** Status: [Pass/Fail NFRs] | Report: `@[link_to_perf_report]`
+- **UI Responsiveness Checks (if performed per @ui-responsiveness-check-001.mdc):** Summary: [e.g., "Passed for mobile/desktop"] | Evidence: `@[link_to_screenshots_or_report]`
+- **CLI Compatibility Checks (if run this phase per @backend-cli-compatibility-check-001.mdc):** Status: [Pass/Fail] | Log: `@[link_to_cli_test_log]`
+- **Edge Case Test Coverage (Ref: @edge-case-test-creation-and-documentation-001.mdc):** Summary: [e.g., "Key edge cases for [module] covered"] | Details: `@[link_to_edge_case_test_summary_or_specific_tests]`
+## VI. Phase Completion & AI Self-Check
+### A. AI-Verified Definition of Done (DoD) Checklist (from Phase Definition)
+*(AI to verify each DoD item based on its actions and evidence collected in this document. All must be 'Verified' for phase completion.)*
+| DoD Item (from Phase Definition) | AI Verification Status (Pending/Verifying/Verified/Failed to Verify/Not Applicable) | AI Verification Timestamp | AI Justification & Evidence for Verification (How AI confirmed this; link to sections in this doc) |
+| :------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [DoD Item 1: e.g., All tasks listed under "Detailed Tasks" are completed.] | | | [e.g., "Checked all tasks in Section III; all statuses are 'Validated'."] |
+| [DoD Item 2: e.g., All "Deliverables" are produced and meet specified quality.] | | | [e.g., "All deliverables in Section IV status 'Completed/Approved'. Linked to deliverables."] |
+| ... (Reference all DoD items from the current phase's Definition Document) | | | |
+**Overall DoD AI Verification Status:** [Pending | In Progress | All Items Verified | Some Items Failed Verification]
+### B. AI-Logged Issues, Blockers & Errors During Execution (Ref: @issue-blocker-immediate-logging-001.mdc)
+| Timestamp (AI Logged) | Issue Type (Error/Blocker/Warning/Requires User Input/User Validation Requested) | Task ID/Context (If applicable) | AI Description of Issue | AI Proposed Action / Status (e.g., "Retrying", "Awaiting User Input", "Logged for Review", "User Validation Pending for @ui-component-user-validation-prompt-001.mdc") |
+| :-------------------- | :----------------------------------------------------------------------------- | :------------------------------ | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| | | | | |
+| | | | | |
+### C. AI-Identified Potential Technical Debt (Ref: @technical-debt-logging-format-001.mdc)
+| Timestamp (AI Logged) | Description of Potential Debt (e.g., "TODO found", "Complex function", "Hardcoded value") | Location (File:Line) | AI Suggested Priority (Low/Medium/High) | Notes / Suggested Action |
+| :-------------------- | :--------------------------------------------------------------------------------------- | :------------------- | :-------------------------------------- | :----------------------- |
+| | | | | |
+| | | | | |
+## VII. Retrospective Notes (AI to contribute initial points, User to review/add)
+### What Went Well (AI Perspective)
+- [e.g., "Automated tests for Service X were generated efficiently and provided good coverage (Ref: @automated-test-requirements-001.mdc)."]
+- [e.g., "Adherence to PEP8 via auto-formatting (per @code-quality-pep8-python-001.mdc) was successful for all Python files."]
+### What Could Be Improved (AI Perspective / Challenges Encountered)
+- [e.g., "Ambiguity in Task 2.3 specification required multiple clarification prompts before proceeding."]
+- [e.g., "Initial attempts to integrate with External API Y failed due to undocumented rate limits (mitigated by implementing retries as per @api-client-error-handling-standard-001.mdc)."]
+### Action Items for Next Phase / Future Work (AI Suggestions)
+- [e.g., "Ensure clearer interface specifications for Module Z in Phase [N+1] Definition."]
+- [e.g., "Investigate performance of function `calculate_report()` if dataset size exceeds [limit] (Ref: @performance-test-requirements-001.mdc)."]
+- [e.g., "Address logged technical debt items (Section VI.C) with priority [High/Medium] in a future iteration or dedicated tech debt phase."]
+## VIII. Transition to Next Phase
+- **Next Planned Phase (from Project Overview):** @Phase [Next Phase Number]: [Next Phase Name]
+- **Focus of Next Phase:** [Briefly describe focus of next phase, copied or summarized from Project Overview or current Phase Definition's "Next Phase" section]
+**AI Action upon Current Phase Completion (DoD Met & Overall Status "Completed" in Section I):**
+1. Ensure all items in Section VI.A (Definition of Done Checklist) of *this* document are "Verified".
+2. Confirm the "Overall Phase Status" (Section I) of *this* document is set to "Completed".
+3. Consult the `@Project Overview Template` and the "Next Phase" section of `@[Current-Phase-Name]-Definition.mdc` to identify the next phase (`@[Next-Phase-Name]`).
+4. Locate or ensure creation of `@[Next-Phase-Name]-Definition.mdc`.
+5. Initialize `@[Next-Phase-Name]-Progress.mdc` using the `@AI-Driven Phase Progress Tracking Template` and its corresponding Definition Document.
+6. Proceed to execute the next phase.
+---
+This document is actively managed by the AI Execution Agent. User input may be required for certain flagged items or for overall phase approval post-AI completion.
+

@@ -1,0 +1,125 @@
+---
+title: Technical Debt Logging Format
+description: Defines the format and process for the AI to log identified potential technical debt.
+tags: technical-debt, maintenance, code-quality, documentation, workflow
+---
+
+# Cursor Rule Definition: Technical Debt Logging Format
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "technical-debt-logging-format-001"
+description: "Potential technical debt identified by the AI must be logged in a structured format in the 'AI-Identified Potential Technical Debt' section of the current phase's progress tracking document."
+severity: "INFO"
+globs: ""
+alwaysApply: true
+tags:
+  - technical-debt
+  - documentation
+  - maintenance
+  - workflow
+  - code-quality
+relatedRules:
+  - dev-workflow-master-001
+  - issue-blocker-immediate-logging-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure visibility of technical debt as it arises during AI-led development.
+
+**Rationale/Benefit:**  
+Documenting debt allows teams to track, prioritize, and eventually resolve suboptimal code. It prevents long-term erosion of quality.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. **AI must log potential technical debt** into Section VI.C of the phase’s progress doc.  
+2. Common sources include:
+   - TODO, FIXME, XXX comments  
+   - Hardcoded values  
+   - Known complexity/algorithm tradeoffs  
+   - Missing error handling  
+   - Duplicated logic  
+3. Logs must include:
+   - Timestamp  
+   - Description of Debt  
+   - File:Line  
+   - Suggested Priority (Low/Medium/High)  
+4. Technical debt should not block forward progress unless it’s also a blocker or error (log separately per @issue-blocker-immediate-logging-001.mdc).
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1: TODO with log**
+```python
+def process_user_data(user_data):
+    # TODO: Add more robust validation (TechDebt: Low)
+    return user_data.get("name")
+```
+| Timestamp           | Description                          | Location             | Priority |
+|---------------------|--------------------------------------|----------------------|----------|
+| 2023-10-27T14:00:00Z| Add robust validation for user_data  | services/user.py:L5  | Low      |
+
+**Example 2: Hardcoded config**
+```python
+API_TIMEOUT = 5  # TechDebt
+```
+| Timestamp           | Description                             | Location                 | Priority |
+|---------------------|-----------------------------------------|--------------------------|----------|
+| 2023-10-27T14:15:00Z| Hardcoded timeout should be configurable| utils/api_client.py:L12 | Medium   |
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+```python
+def slow_sort(data):
+    # O(n^2) but no log...
+    for i in range(len(data)):
+        for j in range(i + 1, len(data)):
+            if data[i] > data[j]:
+                data[i], data[j] = data[j], data[i]
+```
+❌ Not flagged, not logged.
+
+```text
+| Timestamp           | Description        | Location  | Priority |
+|---------------------|--------------------|-----------|----------|
+| 2023-10-27T14:30:00Z| Needs improvement  | main.py   | Medium   |
+```
+❌ Too vague.
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+Cursor must:
+- Detect TODO/FIXME comments
+- Recognize anti-patterns (hardcoding, duplication)
+- Assign default priority (editable by user or reviewer)
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Logs to: `@AI-Driven Phase Progress Tracking`  
+- Related: `@issue-blocker-immediate-logging-001.mdc`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

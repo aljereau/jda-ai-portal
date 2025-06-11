@@ -1,0 +1,1 @@
+# Project model placeholder - will be implemented in Block 3 

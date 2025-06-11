@@ -1,0 +1,31 @@
+---
+title: Pull/Merge Request Required for Integration
+description: Enforces that changes are integrated into main/develop branches exclusively via Pull/Merge Requests.
+tags: git, version-control, workflow, branching, code-review, quality-gate
+---
+
+# Cursor Rule Definition: Pull/Merge Request Required for Integration
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "pr-mr-required-for-integration-001"
+description: "All code changes destined for integration into a protected branch must be submitted via a Pull Request (PR) or Merge Request (MR)."
+severity: "ERROR"
+globs: ""
+alwaysApply: true
+tags: ["git", "workflow", "pull-request", "merge-request", "code-review", "protected-branch"]
+relatedRules: [
+  "dev-workflow-master-001",
+  "no-direct-commits-main-protected-001",
+  "ci-cd-pass-required-for-merge-001"
+]
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+```
+Use code with caution.
+...
+III. Rule Maintenance Log
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

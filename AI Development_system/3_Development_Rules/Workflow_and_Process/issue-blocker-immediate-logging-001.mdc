@@ -1,0 +1,107 @@
+---
+title: Issue and Blocker Immediate Logging
+description: Mandates the immediate documentation of any identified issues or blockers in the phase progress tracking document.
+tags: workflow, project-management, issue-tracking, risk-management, communication
+---
+
+# Cursor Rule Definition: Issue and Blocker Immediate Logging
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "issue-blocker-immediate-logging-001"
+description: "Any development issues, blockers, or significant errors encountered by the AI must be immediately logged in the 'AI-Logged Issues, Blockers & Errors' section of the current phase's progress tracking document."
+severity: "ERROR"
+globs: ""
+alwaysApply: true
+tags:
+  - workflow
+  - issue-tracking
+  - blockers
+  - communication
+  - progress-tracking
+relatedRules:
+  - dev-workflow-master-001
+autoFixable: "NONE"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+
+**Purpose:**  
+Ensure transparent, immediate logging of issues or blockers AI cannot resolve.
+
+**Rationale/Benefit:**  
+Prevents hidden failures, enables faster human intervention, improves visibility and traceability of blockers and risks.
+
+---
+
+### B. Detailed Requirements & Specifications
+
+1. All **unresolved errors** must be logged in the `AI-Logged Issues, Blockers & Errors` table (Section VI.B) of the `@AI-Driven Phase Progress Tracking` doc.  
+2. If a task is blocked (dependency, external service failure), it must be logged as a **Blocker**.  
+3. If AI needs **user input**, that too must be logged immediately.  
+4. Every log entry must include:
+   - Timestamp  
+   - Issue Type (Error / Blocker / Requires User Input)  
+   - Task ID / Context  
+   - Description of Issue  
+   - Proposed Action or Status  
+5. After logging, the AI must **update the corresponding task’s status** (e.g., Blocked, Error, Pending User Input).
+
+---
+
+### C. Examples of Compliance (✅ DO)
+
+**Example 1: API Error**
+```text
+| Timestamp           | Issue Type | Task ID | Description                                             | Status/Action                  |
+|---------------------|------------|---------|----------------------------------------------------------|--------------------------------|
+| 2023-10-27T10:30:00Z| Error      | 4.2     | API [URL] returns 503 after 3 retries                   | Halted task. User intervention |
+```
+
+**Example 2: Ambiguous requirement**
+```text
+| Timestamp           | Issue Type          | Task ID | Description                                                       | Status/Action                     |
+|---------------------|---------------------|---------|--------------------------------------------------------------------|-----------------------------------|
+| 2023-10-27T11:00:00Z| Requires User Input | 2.1     | Ambiguity in handling of conditional field validation             | Paused. Awaiting user input.     |
+```
+
+---
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+**Example 1:** No log, silent failure  
+- AI keeps retrying API call without logging the issue.
+
+**Example 2:** Vague entry  
+```text
+| Timestamp           | Issue Type | Task ID | Description          | Status |
+|---------------------|------------|---------|-----------------------|--------|
+| 2023-10-27T11:30:00Z| Error      | Generic | Something went wrong. | Stop.  |
+```
+❌ No context, diagnosis impossible.
+
+---
+
+### E. Automated Correction Logic / Suggestions
+
+This **is** the correction logic. When AI detects a blocker or error it can’t resolve, it logs it and adjusts workflow state accordingly.
+
+---
+
+### F. File & Rule References
+
+- Governed by: `@dev-workflow-master-001.mdc`  
+- Tracked in: `@AI-Driven Phase Progress Tracking`
+
+---
+
+## III. Rule Maintenance Log
+
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

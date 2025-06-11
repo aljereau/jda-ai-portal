@@ -1,0 +1,1 @@
+# Models package for JDA AI Portal 

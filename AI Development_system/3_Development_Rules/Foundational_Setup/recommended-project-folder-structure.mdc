@@ -1,0 +1,174 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Recommended Project Folder Structure Analysis
+
+## I. Current Structure Evaluation
+
+### ✅ **Current Folders (GOOD):**
+```
+/project-architecture/     - System design, diagrams, technical architecture
+/project-builds/           - Build artifacts, releases, deployment packages  
+/project-databases/        - Database schemas, migrations, data files
+/project-documentation/    - General project documentation
+/project-phases/           - Phase planning, progress tracking, milestones
+/project-structure/        - Project organization documentation
+```
+
+## II. Recommended Additions for Complete Coverage
+
+### 🎯 **High Priority Additions:**
+
+#### **A. Business & Strategy Layer**
+```
+/project-requirements/     - Business requirements, user stories, specifications
+/project-strategy/         - Trading strategies, algorithms, decision logic
+/project-research/         - Market research, competitive analysis, technical research
+```
+
+#### **B. Operations & Deployment**
+```
+/project-environments/     - Environment configs (dev, staging, prod)
+/project-deployment/       - Infrastructure as code, deployment scripts, CI/CD configs
+/project-monitoring/       - Monitoring setup, alerting, metrics definitions
+```
+
+#### **C. Testing & Quality Assurance**
+```
+/project-testing/          - Test plans, test cases, testing strategies (separate from unit tests)
+/project-performance/      - Performance testing, benchmarks, optimization docs
+/project-security/         - Security assessments, compliance docs, penetration testing
+```
+
+### 🔄 **Medium Priority Additions:**
+
+#### **D. Integration & External Systems**
+```
+/project-integrations/     - API specs, third-party integrations, external dependencies
+/project-compliance/       - Legal, regulatory, financial compliance documentation
+```
+
+#### **E. Analytics & Reporting**
+```
+/project-analytics/        - Business analytics, reporting, KPI definitions
+/project-assets/           - Static assets, images, design files, logos
+```
+
+## III. Trading Bot Specific Considerations
+
+### 🤖 **Specialized Folders for Trading Systems:**
+
+```
+/project-strategy/
+├── backtesting-results/
+├── strategy-definitions/
+├── risk-parameters/
+└── performance-analysis/
+
+/project-compliance/
+├── financial-regulations/
+├── audit-trails/
+├── risk-management-policies/
+└── broker-requirements/
+
+/project-monitoring/
+├── trading-alerts/
+├── risk-monitoring/
+├── performance-tracking/
+└── system-health/
+```
+
+## IV. Final Recommended Structure
+
+### 🎯 **Complete Project Organization:**
+
+```
+# CORE PROJECT MANAGEMENT
+/project-phases/           - Phase planning, progress tracking ✅ (CURRENT)
+/project-requirements/     - Business requirements, specs 🆕 (RECOMMENDED)
+/project-strategy/         - Trading strategies, algorithms 🆕 (RECOMMENDED)
+
+# TECHNICAL ARCHITECTURE  
+/project-architecture/     - System design, diagrams ✅ (CURRENT)
+/project-structure/        - Project organization docs ✅ (CURRENT)
+/project-integrations/     - APIs, external systems 🆕 (RECOMMENDED)
+
+# DEVELOPMENT & QUALITY
+/project-testing/          - Test strategies, plans 🆕 (RECOMMENDED)
+/project-performance/      - Benchmarks, optimization 🆕 (RECOMMENDED)
+/project-security/         - Security assessments 🆕 (RECOMMENDED)
+
+# DEPLOYMENT & OPERATIONS
+/project-environments/     - Environment configurations 🆕 (RECOMMENDED)
+/project-deployment/       - Infrastructure, CI/CD 🆕 (RECOMMENDED)
+/project-monitoring/       - Monitoring, alerting 🆕 (RECOMMENDED)
+
+# DATA & PERSISTENCE
+/project-databases/        - Schemas, migrations ✅ (CURRENT)
+/project-builds/           - Artifacts, releases ✅ (CURRENT)
+
+# DOCUMENTATION & COMPLIANCE
+/project-documentation/    - General documentation ✅ (CURRENT)
+/project-compliance/       - Legal, regulatory docs 🆕 (RECOMMENDED)
+/project-research/         - Research, analysis 🆕 (RECOMMENDED)
+```
+
+## V. Implementation Priority
+
+### **🚀 Phase 1 (Immediate - Add Now):**
+- `/project-requirements/` - Essential for capturing business needs
+- `/project-strategy/` - Critical for trading bot logic documentation
+- `/project-environments/` - Needed for proper deployment management
+
+### **🔄 Phase 2 (Short Term - Add During Development):**
+- `/project-testing/` - As testing strategy matures
+- `/project-performance/` - When performance tuning begins
+- `/project-monitoring/` - When moving to production
+
+### **📈 Phase 3 (Long Term - Add As Needed):**
+- `/project-compliance/` - When regulatory requirements emerge
+- `/project-research/` - For ongoing research documentation
+- `/project-integrations/` - As external integrations grow
+
+## VI. Folder Usage Guidelines
+
+### **📁 Clear Ownership:**
+- **Strategy Team:** `/project-strategy/`, `/project-requirements/`
+- **Development Team:** `/project-architecture/`, `/project-testing/`
+- **DevOps Team:** `/project-deployment/`, `/project-environments/`, `/project-monitoring/`
+- **Compliance Team:** `/project-compliance/`, `/project-security/`
+
+### **🔄 Regular Maintenance:**
+- Monthly review of folder contents
+- Archive old versions to avoid clutter
+- Maintain clear naming conventions
+- Update documentation index regularly
+
+## VII. Benefits of Complete Structure
+
+### **✅ Advantages:**
+1. **Complete Coverage** - Every aspect of project lifecycle covered
+2. **Clear Ownership** - Each team knows their documentation areas
+3. **Scalability** - Structure grows with project complexity
+4. **Compliance Ready** - Regulatory documentation properly organized
+5. **Knowledge Management** - Easy to find and maintain project knowledge
+
+### **⚠️ Considerations:**
+1. **Complexity** - More folders to manage
+2. **Maintenance** - Requires discipline to keep organized
+3. **Learning Curve** - Team needs to understand structure
+
+## VIII. Recommendation
+
+**START WITH CURRENT + 3 HIGH PRIORITY ADDITIONS:**
+
+```
+Current Structure (Keep) + Add:
+├── /project-requirements/    🆕 HIGH PRIORITY
+├── /project-strategy/        🆕 HIGH PRIORITY  
+└── /project-environments/    🆕 HIGH PRIORITY
+```
+
+This gives us **90% coverage** with minimal complexity increase, and we can add others as the project grows and needs become clear.

@@ -1,0 +1,74 @@
+---
+title: Initial Project Structure Definition
+description: Mandates the definition of the primary project folder structure early in the project, ideally within the Project Overview or first phase.
+tags: project-setup, architecture, folder-structure, organization, planning
+---
+
+# Cursor Rule Definition: Initial Project Structure Definition
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "initial-project-structure-definition-001"
+description: "The primary project folder structure must be defined and documented at the project outset or within the initial setup phase."
+severity: "WARNING"
+globs: ["@[Project Name] - Project Overview & Roadmap.mdc", "@Phase-1-[Name]-Progress.mdc"]
+alwaysApply: true
+tags: ["project-setup", "architecture", "folder-structure", "organization"]
+relatedRules: ["dev-workflow-master-001"]
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "[YYYY-MM-DD]"
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale
+Purpose: To ensure a well-defined and documented primary folder structure is established for the project from the beginning.
+
+Rationale/Benefit: A clear folder structure promotes organization, consistency, easier navigation, and helps both human developers and the AI Executor (Cursor) understand where different types of files and modules should reside. It sets a strong foundation for a maintainable codebase.
+
+### B. Detailed Requirements & Specifications
+- Requirement 1: The @Project Overview Template (Section 5: Proposed Technical Architecture) should ideally include a high-level description or diagram of the intended top-level project folder structure.
+- Requirement 2: If not detailed in the Project Overview, the first phase must explicitly define and create the initial primary directory structure.
+- Requirement 3: The structure should delineate areas for different concerns (e.g., src/, tests/, docs/, ui/).
+- Requirement 4: The AI must adhere to this structure for all new files.
+- Requirement 5: A brief explanation for each top-level directory should be provided.
+
+### C. Examples of Compliance (✅ DO)
+Example 1:
+```
+Project Root/
+├── docs/                # Project documentation
+├── src/                 # Source code
+│   ├── app/             # Main application logic
+│   │   ├── components/
+│   │   ├── views/
+│   │   └── services/
+│   ├── core_backend/
+│   └── common/
+├── tests/               # Automated tests
+├── scripts/             # Build, deploy, utilities
+└── README.md
+```
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+- No predefined structure and AI creates files in root.
+- Inconsistent directories like both `src/ui/` and `src/components/frontend/`.
+
+### E. Automated Correction Logic / Suggestions
+Detection Pattern:
+- No structure defined at project start or phase 1.
+- AI asked to create a file that doesn’t fit current pattern.
+
+Suggested Fix:
+- "No folder structure defined. As per rule, define in overview or phase 1. Shall I suggest one?"
+- "The path '[path/to/file]' doesn't fit structure. Confirm or propose new directory?"
+
+### F. File & Rule References
+Governed by: @dev-workflow-master-001.mdc  
+Applies to: @Project Overview Template and initial @Enhanced Project Phase Template.
+
+## III. Rule Maintenance Log
+[YYYY-MM-DD] - v1.0 - [Your Name/AI Session ID]: Initial rule creation.

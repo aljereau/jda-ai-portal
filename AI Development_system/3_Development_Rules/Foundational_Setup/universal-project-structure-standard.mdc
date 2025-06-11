@@ -1,0 +1,255 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Universal Project Structure Standard
+
+## I. Design Philosophy
+
+### 🎯 **Core Principles:**
+- **Technology Agnostic**: Works for Python, JavaScript, Java, C#, Go, Rust, etc.
+- **Domain Agnostic**: Works for web apps, mobile apps, trading bots, APIs, games, data science, etc.
+- **Editor Agnostic**: Works with Cursor, VS Code, IntelliJ, Vim, any IDE
+- **Scale Agnostic**: Works for personal projects to enterprise applications
+- **Modular**: Core structure + domain-specific extensions
+
+### 🏗️ **Structure Philosophy:**
+- **Separation of Concerns**: Clear boundaries between different project aspects
+- **Logical Grouping**: Related files grouped by function, not technology
+- **Predictable Organization**: Anyone can find files following consistent patterns
+- **Evolution Ready**: Structure adapts as project grows and requirements change
+
+## II. Universal Core Structure (Required for ALL Projects)
+
+### 📋 **CORE FOLDERS (Always Present):**
+
+```
+# === PROJECT MANAGEMENT CORE ===
+/project-planning/          - Project phases, milestones, roadmaps, timeline
+/project-requirements/      - Business requirements, user stories, acceptance criteria
+/project-documentation/     - General project docs, README files, guides
+
+# === TECHNICAL CORE ===
+/project-architecture/      - System design, diagrams, technical decisions, ADRs
+/project-environments/      - Environment configs (dev/staging/prod), deployment settings
+/project-quality/           - Testing strategies, code quality standards, performance benchmarks
+
+# === OPERATIONAL CORE ===
+/project-deployment/        - Infrastructure as code, CI/CD, deployment scripts
+/project-monitoring/        - Logging, metrics, alerting, health checks
+/project-security/          - Security policies, vulnerability assessments, compliance
+
+# === KNOWLEDGE CORE ===
+/project-research/          - Market research, technical research, competitive analysis
+/project-assets/            - Static resources, images, design files, templates
+/project-integrations/      - Third-party APIs, external systems, vendor docs
+```
+
+## III. Domain-Specific Extensions (Add as Needed)
+
+### 🤖 **For Trading/Financial Systems:**
+```
+/project-strategy/          - Trading algorithms, backtesting, risk management
+/project-compliance/        - Financial regulations, audit trails, legal docs
+/project-data-sources/      - Market data, financial APIs, data vendors
+```
+
+### 🌐 **For Web Applications:**
+```
+/project-ux-design/         - User interface designs, wireframes, user journey maps
+/project-content/           - Content strategy, copywriting, media assets
+/project-analytics/         - User analytics, conversion tracking, A/B testing
+```
+
+### 📱 **For Mobile Applications:**
+```
+/project-platforms/         - iOS/Android specific configs, store requirements
+/project-user-experience/   - Mobile UX patterns, accessibility, device testing
+/project-distribution/      - App store submissions, release management
+```
+
+### 🎮 **For Games:**
+```
+/project-game-design/       - Game mechanics, level design, narrative
+/project-art-assets/        - Sprites, models, textures, animations
+/project-audio/             - Music, sound effects, voice acting
+```
+
+### 🔬 **For Data Science/ML:**
+```
+/project-datasets/          - Training data, validation sets, data sources
+/project-models/            - ML models, algorithms, training results
+/project-experiments/       - Experiment tracking, hypothesis testing, results
+```
+
+### 🏢 **For Enterprise Software:**
+```
+/project-business-rules/    - Business logic, workflow definitions, policies
+/project-governance/        - Corporate compliance, approval processes
+/project-stakeholders/      - Stakeholder management, communication plans
+```
+
+## IV. Technology-Specific Source Organization
+
+### 💻 **Source Code Structure (Language Agnostic):**
+
+```
+/src/                       - All source code (universal)
+├── /core/                  - Core business logic
+├── /services/              - Service layer, external integrations  
+├── /data/                  - Data access, models, persistence
+├── /api/                   - API endpoints, controllers
+├── /ui/                    - User interface components
+├── /utils/                 - Shared utilities, helpers
+├── /config/                - Application configuration
+└── /tests/                 - Unit tests, integration tests
+
+/scripts/                   - Build scripts, automation, utilities
+/docs/                      - Technical documentation (code-related)
+/config/                    - Environment-specific configurations
+/logs/                      - Application logs (local development)
+```
+
+## V. Universal File Naming Conventions
+
+### 📝 **Consistent Naming Patterns:**
+
+```
+# Project Files
+{ProjectName}-Overview.mdc
+{ProjectName}-Architecture.mdc
+{ProjectName}-Requirements.mdc
+
+# Phase Files  
+Phase-{N}-{PhaseName}-Definition.mdc
+Phase-{N}-{PhaseName}-Progress.mdc
+
+# Documentation Files
+{ComponentName}-Documentation.md
+{FeatureName}-Specification.md
+{SystemName}-API-Reference.md
+
+# Configuration Files
+{Environment}-config.{ext}
+{Service}-{Environment}.{ext}
+```
+
+## VI. Scalability Guidelines
+
+### 📈 **Project Size Adaptation:**
+
+#### **Small Projects (1-3 developers, <6 months):**
+```
+Essential Core Only:
+├── /project-planning/
+├── /project-requirements/  
+├── /project-architecture/
+├── /project-documentation/
+└── 1-2 domain-specific folders
+```
+
+#### **Medium Projects (4-10 developers, 6-18 months):**
+```
+Full Core + Selected Extensions:
+├── All Universal Core (9 folders)
+├── 2-4 domain-specific folders
+└── Advanced monitoring/security
+```
+
+#### **Large Projects (10+ developers, 18+ months):**
+```
+Complete Structure + Custom Extensions:
+├── All Universal Core
+├── Multiple domain-specific areas
+├── Custom business-specific folders
+└── Advanced governance/compliance
+```
+
+## VII. Editor Integration Standards
+
+### 🛠️ **Universal Editor Support:**
+
+#### **Configuration Files (All Editors):**
+```
+/.vscode/                   - VS Code specific settings
+/.idea/                     - IntelliJ/PyCharm settings  
+/.cursor/                   - Cursor specific settings
+/editor-config/             - Universal editor configurations
+```
+
+#### **Universal Project Files:**
+```
+/README.md                  - Project overview (any editor)
+/CONTRIBUTING.md            - Contribution guidelines
+/CHANGELOG.md               - Version history
+/.gitignore                 - Version control exclusions
+/project-structure-map.md   - This folder structure explanation
+```
+
+## VIII. Implementation Strategy
+
+### 🚀 **Phased Implementation:**
+
+#### **Phase 1: Establish Core (Week 1)**
+```
+1. Create Universal Core folders (9 folders)
+2. Implement file naming conventions
+3. Create structure documentation
+4. Set up basic templates
+```
+
+#### **Phase 2: Add Domain-Specific (Week 2)**
+```
+1. Identify project domain (trading bot, web app, etc.)
+2. Add relevant domain-specific folders
+3. Create domain-specific templates
+4. Document domain customizations
+```
+
+#### **Phase 3: Optimize & Scale (Ongoing)**
+```
+1. Monitor folder usage and effectiveness
+2. Refine based on project needs
+3. Add custom folders as requirements emerge
+4. Update templates and documentation
+```
+
+## IX. Benefits of Universal System
+
+### ✅ **Advantages:**
+
+1. **Consistency Across Projects** - Same structure regardless of technology/domain
+2. **Team Onboarding** - Developers know where to find things immediately
+3. **Tool Agnostic** - Works with any editor, any language, any framework
+4. **Knowledge Transfer** - Easy to switch between projects
+5. **Template Reuse** - Documentation templates work across all projects
+6. **Scalable Growth** - Structure adapts from prototype to enterprise
+7. **Future Proof** - Core structure stable, extensions handle new domains
+
+### ⚡ **Key Success Factors:**
+
+1. **Core Never Changes** - Universal core provides stability
+2. **Extensions Are Modular** - Add only what you need
+3. **Documentation Driven** - Every folder has clear purpose
+4. **Template Based** - Consistent file formats across projects
+5. **Regular Review** - Structure evolves based on actual usage
+
+## X. Next Steps for Current Project
+
+### 🔄 **Migration Strategy:**
+
+```
+Current Folders → Universal Mapping:
+├── /project-architecture/     ✅ Keep (Universal Core)
+├── /project-phases/          → /project-planning/
+├── /project-documentation/   ✅ Keep (Universal Core)  
+├── /project-builds/          → /project-deployment/
+├── /project-databases/       → /project-data-sources/ (domain-specific)
+├── /project-structure/       ✅ Keep (documentation)
+├── /project-requirements/    ✅ Keep (Universal Core)
+├── /project-strategy/        ✅ Keep (domain-specific for trading)
+└── /project-environments/    ✅ Keep (Universal Core)
+```
+
+This universal system ensures your project structure methodology will work for ANY future project, regardless of technology or domain! 🎯
