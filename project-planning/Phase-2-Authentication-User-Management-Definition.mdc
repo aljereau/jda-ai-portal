@@ -1,5 +1,295 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
+# Phase 2: Authentication & User Management - Definition
+
+## Overview
+
+This phase focuses on implementing the core authentication and user management system for the JDA AI-Guided Project Portal. The goal is to establish secure user authentication using JWT tokens, implement role-based access control (RBAC), and create comprehensive user management capabilities. This phase builds directly on the foundation established in Phase 1 and prepares the security framework for all subsequent phases.
+
+## Objectives
+
+1. **JWT Authentication System Implementation** - Create secure token-based authentication with refresh tokens
+2. **User Database Models & Schemas** - Design and implement comprehensive user data models with SQLAlchemy
+3. **Role-Based Access Control (RBAC)** - Implement Admin, Project Manager, and Client roles with permissions
+4. **User Registration & Login Endpoints** - Create secure registration and authentication API endpoints  
+5. **Password Management System** - Implement secure password hashing, validation, and reset functionality
+6. **User Profile Management** - Enable users to view and update their profile information
+7. **Authentication Middleware Integration** - Secure existing and future API endpoints with authentication requirements
+
+## Prerequisites
+
+- **Phase 1: Foundation & Core Infrastructure** completed and its Progress Document (`@Phase-1-Foundation-Core-Infrastructure-Progress.mdc`) shows all DoD items verified
+- **Database connection operational** with PostgreSQL and SQLAlchemy configured
+- **FastAPI backend foundation** established with configuration management and logging
+- **Environment configuration** system in place with JWT secret key support
+- **Git repository** initialized and connected to GitHub for version control
+
+## Assumptions
+
+- **JWT token approach** is appropriate for the enterprise authentication requirements
+- **PostgreSQL database** can handle user data with proper indexing and performance
+- **Bcrypt password hashing** provides sufficient security for password storage
+- **Role-based permissions** can be implemented with simple enum-based approach initially
+- **Email verification** will be implemented in a future phase (not required for MVP)
+
+## Scope
+
+### In Scope:
+
+- **User Model Implementation** with SQLAlchemy ORM including relationships and constraints
+- **JWT token generation and validation** with access and refresh token support
+- **Password hashing and verification** using bcrypt with proper salt rounds
+- **User registration endpoint** with input validation and duplicate checking
+- **User login endpoint** with credential verification and token generation
+- **Role-based access control** for Admin, Project Manager, and Client roles
+- **User profile endpoints** for viewing and updating user information
+- **Authentication middleware** to protect secured routes
+- **Database migrations** using Alembic for user tables
+- **Unit tests** for authentication services and endpoints (per @automated-test-requirements-001.mdc)
+- **API documentation** updates for authentication endpoints
+
+### Out of Scope:
+
+- **Email verification system** (deferred to Phase 3 or dedicated security enhancement phase)
+- **OAuth2 integration** with third-party providers (Google, Microsoft, etc.)
+- **Advanced password policies** beyond basic strength requirements
+- **User session management** beyond JWT token lifecycle
+- **Advanced audit logging** for authentication events (basic logging only)
+- **Multi-factor authentication (MFA)** implementation
+
+## Risk Assessment
+
+### High Risk:
+- **Security vulnerabilities** in authentication implementation - *Mitigation: Follow OWASP guidelines, comprehensive testing*
+- **JWT token management complexity** - *Mitigation: Use proven libraries, implement proper token refresh*
+
+### Medium Risk:
+- **Database schema changes** affecting existing foundation - *Mitigation: Use Alembic migrations, test thoroughly*
+- **Performance impact** of password hashing - *Mitigation: Use appropriate bcrypt rounds, monitor performance*
+
+### Low Risk:
+- **Role permission complexity** - *Mitigation: Start with simple role-based approach, iterate*
+- **API endpoint integration** with existing structure - *Mitigation: Leverage established FastAPI patterns*
+
+## Implementation Approach
+
+### Block 1: User Models & Database Setup
+**Execute When**: User requests "begin Phase 2 Block 1"
+
+#### Tasks:
+1. **Create User SQLAlchemy Model** with all required fields and relationships
+2. **Create Role and Permission Models** for RBAC implementation  
+3. **Generate Alembic Migrations** for user-related tables
+4. **Create Pydantic Schemas** for user data validation and serialization
+5. **Test Database Model Creation** and relationship integrity
+
+#### Deliverables:
+- `src/backend/app/models/user.py` - Complete User model with relationships
+- `src/backend/app/models/auth.py` - Role and Permission models
+- `src/backend/app/schemas/user.py` - User Pydantic schemas
+- `src/backend/alembic/versions/` - Migration files for user tables
+- Database tables created and tested
+
+#### Dependencies:
+- Phase 1 database connection established
+- SQLAlchemy configuration operational
+
+---
+
+### Block 2: Authentication Services & JWT
+**Execute When**: Block 1 complete, user requests "begin Phase 2 Block 2"
+
+#### Tasks:
+1. **Implement JWT Service** with token generation, validation, and refresh
+2. **Create Password Service** with bcrypt hashing and verification
+3. **Build Authentication Service** combining JWT and password services
+4. **Create Security Dependencies** for FastAPI route protection
+5. **Test Authentication Services** with comprehensive unit tests
+
+#### Deliverables:
+- `src/backend/app/services/jwt_service.py` - JWT token management
+- `src/backend/app/services/password_service.py` - Password hashing/verification  
+- `src/backend/app/services/auth_service.py` - Authentication business logic
+- `src/backend/app/core/security.py` - FastAPI security dependencies
+- Unit tests for all authentication services
+
+#### Dependencies:
+- Block 1: User models and database setup complete
+- Configuration system supports JWT secret keys
+
+---
+
+### Block 3: User Registration & Login APIs
+**Execute When**: Block 2 complete, user requests "begin Phase 2 Block 3"
+
+#### Tasks:
+1. **Create User Registration Endpoint** with validation and duplicate checking
+2. **Create User Login Endpoint** with credential verification
+3. **Create Token Refresh Endpoint** for JWT token renewal
+4. **Create User Profile Endpoints** for viewing and updating profiles
+5. **Update API Router** to include authentication routes
+
+#### Deliverables:
+- `src/backend/app/api/v1/auth.py` - Authentication endpoints
+- `src/backend/app/api/v1/users.py` - User management endpoints
+- Updated API router with authentication routes
+- API documentation for authentication endpoints
+- Integration tests for authentication flow
+
+#### Dependencies:
+- Block 2: Authentication services operational
+- FastAPI router structure from Phase 1
+
+---
+
+### Block 4: Role-Based Access Control
+**Execute When**: Block 3 complete, user requests "begin Phase 2 Block 4"
+
+#### Tasks:
+1. **Implement Role Permission System** with decorators and middleware
+2. **Create Admin User Management** endpoints for user administration
+3. **Apply Role-Based Protection** to existing and new API endpoints
+4. **Create Role Assignment Logic** for user role management
+5. **Test RBAC Implementation** with different user roles
+
+#### Deliverables:
+- `src/backend/app/core/permissions.py` - Role-based permission system
+- `src/backend/app/api/v1/admin.py` - Admin user management endpoints
+- Protected API endpoints with role-based access
+- RBAC integration tests
+- Documentation for role-based permissions
+
+#### Dependencies:
+- Block 3: User registration and login operational
+- Role models from Block 1 implemented
+
+---
+
+### Block 5: Integration & Testing
+**Execute When**: Block 4 complete, user requests "begin Phase 2 Block 5"
+
+#### Tasks:
+1. **Integrate Authentication with Frontend Structure** (placeholder preparation)
+2. **Create Database Seed Data** for testing with sample users and roles
+3. **Comprehensive Testing Suite** for authentication system
+4. **Security Testing** for common vulnerabilities
+5. **Performance Testing** for authentication endpoints
+
+#### Deliverables:
+- Database seed scripts with sample users
+- Complete test suite for authentication system
+- Security vulnerability assessment report
+- Performance benchmarks for auth endpoints
+- Frontend integration preparation documentation
+
+#### Dependencies:
+- Block 4: RBAC system operational
+- Testing framework from Phase 1 foundation
+
+## Testing Strategy
+
+### Unit Tests (per @automated-test-requirements-001.mdc):
+- **JWT service** token generation, validation, expiration
+- **Password service** hashing, verification, security
+- **Authentication service** login, registration, role assignment
+- **User models** validation, relationships, constraints
+
+### Integration Tests:
+- **Full authentication flow** registration → login → protected endpoint access
+- **Role-based access** Admin/PM/Client permission verification
+- **Token refresh flow** access token renewal process
+- **Database operations** user creation, updates, role assignments
+
+### Security Tests:
+- **SQL injection** protection in user queries
+- **JWT security** token tampering, expiration handling
+- **Password security** brute force protection, secure hashing
+- **Input validation** malicious data handling
+
+## Deliverables
+
+### Core Implementation:
+- **User Authentication System** with JWT tokens and refresh capability
+- **User Database Models** with proper relationships and constraints
+- **Role-Based Access Control** supporting Admin, Project Manager, Client roles
+- **API Endpoints** for registration, login, profile management, admin functions
+- **Security Middleware** protecting application endpoints
+
+### Documentation:
+- **API Documentation** updated with authentication endpoints
+- **Database Schema** documentation with user tables and relationships
+- **Security Guidelines** for authentication and authorization
+- **Testing Documentation** with authentication test procedures
+
+### Quality Assurance:
+- **Comprehensive Test Suite** with unit, integration, and security tests
+- **Code Quality** following PEP 8 standards with type hints and docstrings
+- **Security Validation** against common authentication vulnerabilities
+
+## Definition of Done (DoD)
+
+### Technical Requirements:
+- [ ] User model implemented with SQLAlchemy including all required fields and relationships
+- [ ] JWT authentication service operational with token generation, validation, and refresh
+- [ ] Password hashing implemented with bcrypt and proper security measures
+- [ ] User registration endpoint functional with input validation and duplicate prevention
+- [ ] User login endpoint operational with credential verification and token generation
+- [ ] Role-based access control implemented for Admin, Project Manager, and Client roles
+- [ ] User profile management endpoints created for viewing and updating user information
+- [ ] Authentication middleware integrated to protect secured API endpoints
+- [ ] Database migrations created and tested for all user-related tables
+
+### Quality Assurance:
+- [ ] All authentication services have comprehensive unit tests with >90% coverage
+- [ ] Integration tests validate complete authentication flow from registration to protected access
+- [ ] Security testing performed against common authentication vulnerabilities
+- [ ] API documentation updated with all authentication endpoints and examples
+- [ ] Code follows PEP 8 standards with complete type hints and docstrings
+
+### Business Requirements:
+- [ ] Users can successfully register with email and password
+- [ ] Users can login and receive JWT tokens for authenticated requests
+- [ ] Different user roles (Admin, PM, Client) have appropriate access permissions
+- [ ] User profiles can be viewed and updated through API endpoints
+- [ ] Admin users can manage other users and assign roles
+- [ ] Authentication system integrates seamlessly with existing Phase 1 foundation
+
+### Documentation & Process:
+- [ ] Phase 2 progress tracking document completed with detailed execution log
+- [ ] All deliverables documented with links and evidence of completion
+- [ ] Security guidelines documented for authentication implementation
+- [ ] Database schema changes documented with migration procedures
+- [ ] API endpoints documented with request/response examples
+
+## Success Criteria
+
+### Functional Success:
+- **Complete authentication flow** operational from user registration through protected endpoint access
+- **Role-based permissions** correctly restricting access based on user roles
+- **Security measures** implemented preventing common authentication vulnerabilities
+- **Performance targets** met for authentication endpoints (<200ms response time)
+
+### Quality Success:
+- **Test coverage** >90% for all authentication-related code
+- **Security validation** passed with no critical vulnerabilities identified
+- **Code quality** meets enterprise standards with proper documentation
+- **Integration** seamless with existing Phase 1 foundation
+
+## Next Phase Dependencies
+
+**Phase 3 Preparation**: This authentication system provides the foundation for:
+- **Project management features** with user-specific project access
+- **Client onboarding** with role-based portal experiences  
+- **AI integration** with user context and personalization
+- **Collaboration tools** with user identity and permissions
+
+---
+
+**Phase Owner**: AI Development System  
+**Estimated Complexity**: Medium-High (Authentication & Security)  
+**Prerequisites Validation**: Required before execution  
+**Progress Tracking**: `@Phase-2-Authentication-User-Management-Progress.mdc`
+

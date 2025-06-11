@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Server Test</title>
+</head>
+<body>
+    <h1>JDA Server Test</h1>
+    <button onclick="testServer()">Test Server Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testServer() {
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: green;">✅ Server is working!</p>' +
+                    '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">❌ Server not reachable: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html> 
