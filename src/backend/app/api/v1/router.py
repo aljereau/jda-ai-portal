@@ -6,11 +6,17 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.config import get_settings
+from .auth import router as auth_router
+from .users import router as users_router
 
 settings = get_settings()
 
 # Create main API router
 api_router = APIRouter()
+
+# Include authentication and user management routers
+api_router.include_router(auth_router, tags=["Authentication"])
+api_router.include_router(users_router, tags=["User Management"])
 
 
 @api_router.get("/", tags=["System"])
@@ -44,6 +50,10 @@ async def api_status(db: Session = Depends(get_db)):
         "version": settings.VERSION,
         "environment": settings.ENVIRONMENT,
         "features": {
+            "authentication": "operational",
+            "user_management": "operational", 
+            "jwt_tokens": "enabled",
+            "role_based_access": "enabled",
             "ai_integration": bool(settings.OPENAI_API_KEY or settings.ANTHROPIC_API_KEY),
             "file_uploads": True,
             "real_time_features": True,
