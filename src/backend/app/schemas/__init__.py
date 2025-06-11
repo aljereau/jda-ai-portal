@@ -1,0 +1,1 @@
+# Schemas package for JDA AI Portal 
