@@ -1,0 +1,230 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Phase 3: Project Management Core Features - Definition
+
+## Overview
+
+This phase focuses on implementing the core business functionality of the JDA AI-Guided Project Portal: project creation, proposal generation, client management, and dynamic project hubs. The goal is to deliver the primary value proposition that enables JDA consultancy operations to efficiently manage projects from intake through deployment phases.
+
+## Objectives
+
+1. **AI-Powered Proposal Generation Pipeline** - Complete transcript → summary → proposal workflow with review/edit capabilities
+2. **Proposal Template Engine** - Dynamic proposal generation using existing JDA_CasBon_Proposal.html template
+3. **Proposal Expansion System** - User-controlled proposal editing with block addition/removal features
+4. **Proposal Database & Management** - Storage, retrieval, and version management for all generated proposals
+5. **Basic Project Tracking** - Simple 4-phase project lifecycle tied to proposals (Exploratory → Discovery → Development → Deployment)
+6. **Client Portal Interface** - Read-only client access to view proposals and project progress
+7. **Team Management Dashboard** - Proposal database access and project oversight for team members
+
+## Prerequisites
+
+* ✅ **Phase 2: Authentication & User Management** completed and its Progress Document (`Phase-2-Authentication-User-Management-Progress.mdc`) shows all DoD items verified
+* ✅ **Authentication System Operational** - JWT auth, RBAC, user management fully functional and tested
+* ✅ **Database Foundation** - SQLAlchemy models and database connection established
+* ✅ **API Framework** - FastAPI backend structure and routing system operational
+* ✅ **Version Control** - GitHub repository established with systematic commit history
+
+## Assumptions
+
+* **Authentication Foundation Stable** - Phase 2 auth system will remain stable during development
+* **File Storage Approach** - Local file storage acceptable for MVP, cloud storage can be added later
+* **AI Integration Method** - OpenAI API or similar service will be used for proposal generation assistance
+* **Client Collaboration Level** - Basic client viewing and commenting sufficient for initial release
+* **Performance Requirements** - Standard web application performance targets (< 2s page loads)
+
+## Scope
+
+### In Scope:
+
+* **Project Management Models** - Project, Client, Proposal, ProjectPhase, Document database models
+* **Project CRUD Operations** - Create, read, update, delete projects with proper authorization
+* **Proposal Generation System** - Template-based proposals with AI enhancement capabilities
+* **Phase-Based Project Views** - Dynamic interfaces that change based on project phase
+* **File Upload & Management** - Secure file handling with proper access controls
+* **Client Portal Views** - Read-only project views for client users
+* **Admin Project Dashboard** - Overview of all projects with management capabilities
+* **Project Status Tracking** - Progress monitoring and status updates throughout phases
+* **Basic Reporting** - Project metrics and status summaries
+
+### Out of Scope:
+
+* **Advanced Analytics Dashboard** - Detailed project analytics (deferred to Phase 4)
+* **Real-time Collaboration Tools** - Live editing, chat, video calls (future enhancement)
+* **Advanced AI Features** - Complex AI workflows beyond basic proposal assistance
+* **Mobile Application** - Responsive web design only, native mobile apps deferred
+* **Third-party Integrations** - External service integrations (CRM, accounting) deferred
+* **Advanced Security Features** - Audit logging, advanced permissions (basic RBAC sufficient)
+
+## Risk Assessment
+
+### High Risk:
+* **AI Integration Complexity** - Proposal generation may require significant prompt engineering
+* **File Management Security** - Ensuring proper access controls for uploaded documents
+* **Performance with Large Projects** - Database queries may need optimization for projects with many documents
+
+### Medium Risk:
+* **User Experience Complexity** - Dynamic phase-based interfaces may confuse users
+* **Data Model Evolution** - Project requirements may change during development
+
+### Low Risk:
+* **Authentication Integration** - Phase 2 provides solid foundation
+* **Basic CRUD Operations** - Standard patterns from established frameworks
+
+## Implementation Guidelines
+
+### Development Approach:
+* **Block-Based Development** - 7 implementation blocks executed sequentially
+* **Test-Driven Development** - Unit tests for all business logic components
+* **API-First Design** - Backend APIs developed before frontend interfaces
+* **Progressive Enhancement** - Start with basic functionality, add complexity incrementally
+
+### Code Quality Requirements:
+* **PEP 8 Compliance** - All Python code follows style guidelines
+* **Type Hints** - Complete type annotations for all functions
+* **Comprehensive Docstrings** - Google/NumPy style documentation
+* **Error Handling** - Robust exception handling with proper logging
+* **Security Validation** - Input validation and authorization checks
+
+### Testing Strategy:
+* **Unit Tests** - All service layer functions
+* **Integration Tests** - API endpoint functionality
+* **Security Tests** - Authorization and access control validation
+* **User Acceptance Testing** - Real workflow validation with test scenarios
+
+## Task Breakdown
+
+### Block 1: Core Proposal Generation Pipeline (Days 1-2)
+* Task 1.1: Design Transcript, Summary, Proposal database models
+* Task 1.2: Implement text transcript upload and processing
+* Task 1.3: Build AI summary generation from meeting transcripts
+* Task 1.4: Create proposal template engine using JDA_CasBon_Proposal.html
+
+### Block 2: AI Proposal Intelligence & Review System (Days 3-4)
+* Task 2.1: Implement intelligent requirement extraction (scope, timeline, pricing, deliverables)
+* Task 2.2: Build context-aware proposal generation (exploratory vs discovery phase awareness)
+* Task 2.3: Create proposal review and edit interface with manual corrections
+* Task 2.4: Implement proposal expansion system (add/remove blocks functionality)
+
+### Block 3: Proposal Database & Management (Days 5-6)
+* Task 3.1: Design proposal storage and versioning system
+* Task 3.2: Implement proposal database with search and filtering
+* Task 3.3: Create proposal access and sharing controls (team vs client access)
+* Task 3.4: Build proposal export functionality (saveable proposal "sites")
+
+### Block 4: Basic Project Tracking Integration (Days 7-8)
+* Task 4.1: Design simple Project model linked to proposals
+* Task 4.2: Implement 4-phase tracking (Exploratory → Discovery → Development → Deployment)
+* Task 4.3: Create project milestone and status update system
+* Task 4.4: Build project-proposal relationship management
+
+### Block 5: Client Portal Interface (Days 9-10)
+* Task 5.1: Design client-specific proposal viewing interfaces
+* Task 5.2: Implement read-only client access to their proposals and project progress
+* Task 5.3: Create client-friendly project status displays with 4-phase progress
+* Task 5.4: Build simple client communication and update notification system
+
+### Block 6: Team Management Dashboard & File Support (Days 11-12)
+* Task 6.1: Create team dashboard for proposal database access and management
+* Task 6.2: Implement file upload support (text transcripts, images, Excel, PDF, Word)
+* Task 6.3: Build proposal analytics and team productivity metrics
+* Task 6.4: Create advanced proposal search and organization features
+
+### Block 7: Integration & Testing (Days 13-14)
+* Task 7.1: End-to-end testing of transcript → summary → proposal → database workflow
+* Task 7.2: User acceptance testing with real meeting transcripts and proposal generation
+* Task 7.3: Proposal expansion and editing functionality testing
+* Task 7.4: Client portal access and team dashboard validation
+* Task 7.5: Performance optimization and deployment preparation
+
+## Deliverables
+
+### Technical Deliverables:
+1. **Project Management Database Models** - Complete SQLAlchemy models for all project entities
+2. **Project Management API** - 25+ endpoints for project, client, and proposal management
+3. **AI Proposal Generation Service** - Functional AI-assisted proposal creation system
+4. **File Management System** - Secure file upload, storage, and access control
+5. **Dynamic Project Interfaces** - Phase-aware project views and workflows
+6. **Client Portal** - Complete client-facing project visibility
+7. **Admin Dashboard** - Comprehensive project management interface
+
+### Documentation:
+1. **API Documentation** - Complete endpoint documentation with examples
+2. **User Guide** - Project management workflow documentation
+3. **Technical Architecture** - System design and component interaction diagrams
+4. **Security Documentation** - Access control and security measures documentation
+5. **Testing Documentation** - Test procedures and validation evidence
+
+### Quality Assurance:
+1. **Comprehensive Test Suite** - Unit, integration, and security tests for all components
+2. **User Acceptance Testing** - Validated workflows for all user roles
+3. **Performance Benchmarks** - Response time and throughput measurements
+4. **Security Validation** - Penetration testing and vulnerability assessment
+
+## Definition of Done (DoD)
+
+### Technical Requirements:
+- [ ] **Project management models operational** - All database models created and relationships established
+- [ ] **Project CRUD functionality complete** - Create, read, update, delete operations for all entities
+- [ ] **AI proposal generation working** - Functional AI-assisted proposal creation and editing
+- [ ] **File management system operational** - Secure file upload, storage, and access control
+- [ ] **Dynamic project hubs functional** - Phase-aware interfaces operational
+- [ ] **Client portal complete** - All client-facing features operational
+- [ ] **Admin dashboard functional** - Complete project management and oversight tools
+- [ ] **API documentation updated** - All new endpoints documented with examples
+- [ ] **Database migrations prepared** - All schema changes ready for production deployment
+
+### Quality Assurance:
+- [ ] **Unit tests with >90% coverage** - All business logic comprehensively tested
+- [ ] **Integration tests validate complete workflows** - End-to-end project management flows tested
+- [ ] **Security testing performed** - Authorization and access control validated
+- [ ] **Performance testing completed** - Response times under 2 seconds for standard operations
+- [ ] **User acceptance testing passed** - All workflows validated with realistic scenarios
+
+### Business Requirements:
+- [ ] **Users can create and manage projects** - Complete project lifecycle management
+- [ ] **AI proposal generation assists users** - Functional AI-powered proposal creation
+- [ ] **File management enables collaboration** - Secure document sharing and management
+- [ ] **Client portal provides project visibility** - Clients can view project progress and documents
+- [ ] **Admin tools enable project oversight** - Comprehensive project management capabilities
+- [ ] **System integrates seamlessly with Phase 2** - Authentication and project management work together
+
+### Deployment Requirements:
+- [ ] **All code committed to version control** - Systematic Git commits with clear messages
+- [ ] **Database schema ready for production** - Migration scripts tested and validated
+- [ ] **Security measures implemented** - Access controls and data protection operational
+- [ ] **Documentation complete and accessible** - User guides and technical docs available
+
+## Success Metrics
+
+### Functional Metrics:
+- **Project Creation Time** - < 5 minutes from project initiation to first proposal
+- **Proposal Generation Speed** - < 30 seconds for AI-assisted proposal creation
+- **File Upload Performance** - < 10 seconds for documents up to 10MB
+- **Client Portal Load Time** - < 2 seconds for project overview pages
+
+### Quality Metrics:
+- **Test Coverage** - > 90% code coverage across all components
+- **Security Score** - Zero critical vulnerabilities in security scanning
+- **Performance Benchmarks** - All API endpoints respond within 2 seconds
+- **User Satisfaction** - Positive feedback on workflow efficiency and usability
+
+### Business Impact:
+- **Proposal Creation Efficiency** - 50% reduction in time to create project proposals
+- **Client Communication** - Centralized project visibility and document access
+- **Project Oversight** - Real-time project status and progress monitoring
+- **Process Standardization** - Consistent project management workflows across all projects
+
+---
+
+**Phase Created By**: AI Development System  
+**Template Used**: enhanced-project-phase-template.mdc  
+**Validation Against**: Phase 2 completion verified per @phase-objective-validation-001.mdc  
+**Next Phase**: Phase 4 - Advanced Features & Analytics (TBD based on Phase 3 outcomes)
+
+---
+
+**READY FOR EXECUTION** - All prerequisites met, objectives defined, and methodology compliance verified.
+

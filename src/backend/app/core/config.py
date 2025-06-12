@@ -6,7 +6,8 @@ from functools import lru_cache
 from typing import List, Optional, Any, Dict
 from pathlib import Path
 
-from pydantic import BaseSettings, validator, Field
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -36,8 +37,8 @@ class Settings(BaseSettings):
     
     # Database Settings
     DATABASE_URL: str = Field(
-        default="postgresql://jda_user:jda_dev_password@localhost:5432/jda_portal_dev",
-        description="PostgreSQL database connection URL"
+        default="sqlite:///./test.db",
+        description="Database connection URL"
     )
     
     # Redis Settings
@@ -106,28 +107,32 @@ class Settings(BaseSettings):
         description="Default project phases"
     )
     
-    @validator("ENVIRONMENT")
+    @field_validator("ENVIRONMENT")
+    @classmethod
     def validate_environment(cls, v: str) -> str:
         """Validate environment value."""
         if v not in ["development", "staging", "production"]:
             raise ValueError("ENVIRONMENT must be 'development', 'staging', or 'production'")
         return v
     
-    @validator("CORS_ORIGINS", pre=True)
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
     def parse_cors_origins(cls, v: Any) -> List[str]:
         """Parse CORS origins from string or list."""
         if isinstance(v, str):
             return [origin.strip() for origin in v.split(",")]
         return v
     
-    @validator("ALLOWED_HOSTS", pre=True)
+    @field_validator("ALLOWED_HOSTS", mode="before")
+    @classmethod
     def parse_allowed_hosts(cls, v: Any) -> List[str]:
         """Parse allowed hosts from string or list."""
         if isinstance(v, str):
             return [host.strip() for host in v.split(",")]
         return v
     
-    @validator("ALLOWED_FILE_TYPES", pre=True)
+    @field_validator("ALLOWED_FILE_TYPES", mode="before")
+    @classmethod
     def parse_file_types(cls, v: Any) -> List[str]:
         """Parse allowed file types from string or list."""
         if isinstance(v, str):
@@ -162,11 +167,11 @@ class Settings(BaseSettings):
             "max_tokens": self.MAX_AI_TOKENS,
         }
     
-    class Config:
-        """Pydantic configuration."""
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": True
+    }
 
 
 @lru_cache()
@@ -175,4 +180,7 @@ def get_settings() -> Settings:
     Get cached settings instance.
     Uses LRU cache to avoid re-reading environment variables.
     """
-    return Settings() 
+    return Settings()
+
+# Create global settings instance
+settings = get_settings() 

@@ -80,7 +80,8 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     
-    # Relationships (to be implemented in future phases)
+    # Relationships
+    proposals = relationship("Proposal", back_populates="creator")
     # projects = relationship("Project", secondary="project_users", back_populates="members")
     # created_projects = relationship("Project", back_populates="created_by")
     # client_profile = relationship("Client", back_populates="user", uselist=False)

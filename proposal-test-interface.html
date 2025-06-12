@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JDA Proposal Management Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .box { 
+            background: white; 
+            padding: 20px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .box h3 { 
+            margin-top: 0; 
+            color: #333; 
+            border-bottom: 2px solid #007bff; 
+            padding-bottom: 10px; 
+        }
+        input, textarea, select, button { 
+            width: 100%; 
+            padding: 8px; 
+            margin: 5px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-family: Arial, sans-serif;
+        }
+        textarea { 
+            height: 100px; 
+            resize: vertical; 
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        button:hover { 
+            background: #0056b3; 
+        }
+        .response { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 4px; 
+            font-family: monospace; 
+            font-size: 12px; 
+            white-space: pre-wrap; 
+            max-height: 300px;
+            overflow-y: auto;
+            border-left: 4px solid #007bff;
+        }
+        .yellow { background: #fff3cd; border-left-color: #ffc107; }
+        .blue { background: #e7f3ff; border-left-color: #17a2b8; }
+        .green { background: #d4edda; border-left-color: #28a745; }
+        .error { background: #f8d7da; border-left-color: #dc3545; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        .full-width { 
+            grid-column: 1 / -1; 
+        }
+        .inline-group {
+            display: flex;
+            gap: 10px;
+        }
+        .inline-group input, .inline-group select {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 JDA Proposal Management Test Suite</h1>
+    
+    <div class="box yellow">
+        <h3>📋 Test Workflow</h3>
+        <p><strong>1. Login</strong> with admin@jda.com / AdminPass123!</p>
+        <p><strong>2. Upload Transcript</strong> - Use sample meeting transcript</p>
+        <p><strong>3. Generate Proposal</strong> - AI processes and creates proposal</p>
+        <p><strong>4. Edit & Validate</strong> - Add blocks, edit content, validate</p>
+        <p><strong>5. Share & Export</strong> - Create sharing links and export to files</p>
+        <p><strong>6. Track Project</strong> - Monitor project phases and milestones</p>
+    </div>
+
+    <div id="userInfo" class="box blue" style="display: none;">
+        <h3>👤 Current User</h3>
+        <div id="currentUserDisplay"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="grid">
+        <!-- Authentication Section -->
+        <div class="box">
+            <h3>🔐 Authentication</h3>
+            <input type="email" id="loginEmail" value="admin@jda.com" placeholder="Email">
+            <input type="password" id="loginPassword" value="AdminPass123!" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <div id="loginResponse" class="response"></div>
+        </div>
+
+        <!-- Quick Status -->
+        <div class="box">
+            <h3>⚡ Quick Tests</h3>
+            <button onclick="testHealth()">Health Check</button>
+            <button onclick="listProposals()">List Proposals</button>
+            <button onclick="getProjectsDashboard()">Projects Dashboard</button>
+            <div id="quickResponse" class="response"></div>
+        </div>
+
+        <!-- Transcript Upload Section -->
+        <div class="box full-width">
+            <h3>📄 1. Upload Meeting Transcript</h3>
+            <input type="text" id="projectName" value="Sample AI Project" placeholder="Project Name">
+            <input type="text" id="clientName" value="Test Client Inc" placeholder="Client Name">
+            <select id="projectPhase">
+                <option value="exploratory">Exploratory</option>
+                <option value="discovery">Discovery</option>
+                <option value="development">Development</option>
+                <option value="deployment">Deployment</option>
+            </select>
+            <textarea id="transcriptContent" placeholder="Meeting transcript content...">Meeting Transcript - AI Project Discovery
+
+Attendees: John (JDA Solution), Sarah (Test Client Inc)
+
+John: Thanks for joining today Sarah. Let's discuss your AI automation needs.
+
+Sarah: We're looking to streamline our customer service operations. Currently, our team spends 4-5 hours daily on repetitive email responses and data entry.
+
+John: That's a perfect use case for AI automation. What's your current volume?
+
+Sarah: About 200-300 customer emails per day, plus manual data entry into our CRM system.
+
+John: We can definitely help with that. Our AI solution can:
+1. Automatically categorize and respond to common inquiries
+2. Extract key information and update your CRM automatically  
+3. Escalate complex issues to human agents
+
+Sarah: That sounds great. What's the timeline and investment?
+
+John: For the discovery phase, we'd need 2-3 weeks to analyze your current processes. Investment would be around €3,500 for the complete discovery including AI demos and process mapping.
+
+Sarah: Perfect. When can we start?
+
+John: I'll prepare a formal proposal this week and we can begin next Monday.
+
+Sarah: Excellent. Looking forward to it.</textarea>
+            <button onclick="uploadTranscript()">Upload & Process Transcript</button>
+            <div id="transcriptResponse" class="response"></div>
+        </div>
+
+        <!-- Proposal Generation -->
+        <div class="box full-width">
+            <h3>🤖 2. Generate AI Proposal</h3>
+            <div class="inline-group">
+                <input type="number" id="proposalId" placeholder="Proposal ID (from upload)">
+                <button onclick="generateProposal()">Generate Proposal</button>
+            </div>
+            <div id="proposalResponse" class="response"></div>
+        </div>
+
+        <!-- Proposal Management -->
+        <div class="box">
+            <h3>✏️ 3. Edit Proposal</h3>
+            <div class="inline-group">
+                <input type="number" id="editProposalId" placeholder="Proposal ID">
+                <select id="blockType">
+                    <option value="overview">Overview</option>
+                    <option value="scope">Scope</option>
+                    <option value="timeline">Timeline</option>
+                    <option value="deliverables">Deliverables</option>
+                    <option value="pricing">Pricing</option>
+                    <option value="risks">Risks</option>
+                </select>
+            </div>
+            <textarea id="blockContent" placeholder="Block content (leave empty for AI generation)"></textarea>
+            <button onclick="addProposalBlock()">Add Block</button>
+            <button onclick="validateProposal()">Validate Proposal</button>
+            <div id="editResponse" class="response"></div>
+        </div>
+
+        <!-- Sharing & Export -->
+        <div class="box">
+            <h3>🔗 4. Share & Export</h3>
+            <div class="inline-group">
+                <input type="number" id="shareProposalId" placeholder="Proposal ID">
+                <select id="shareType">
+                    <option value="client_view">Client View</option>
+                    <option value="public_link">Public Link</option>
+                    <option value="team_access">Team Access</option>
+                </select>
+            </div>
+            <button onclick="createShare()">Create Share Link</button>
+            <div class="inline-group">
+                <select id="exportFormat">
+                    <option value="html">HTML</option>
+                    <option value="markdown">Markdown</option>
+                    <option value="pdf">PDF</option>
+                    <option value="docx">DOCX</option>
+                </select>
+                <button onclick="exportProposal()">Export Proposal</button>
+            </div>
+            <div id="shareResponse" class="response"></div>
+        </div>
+
+        <!-- Project Tracking -->
+        <div class="box full-width">
+            <h3>📊 5. Project Tracking</h3>
+            <div class="inline-group">
+                <input type="number" id="trackProposalId" placeholder="Proposal ID">
+                <button onclick="getProjectStatus()">Get Status</button>
+                <button onclick="advancePhase()">Advance Phase</button>
+            </div>
+            <div class="inline-group">
+                <input type="text" id="milestoneName" placeholder="Milestone name">
+                <select id="milestoneStatus">
+                    <option value="not_started">Not Started</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="blocked">Blocked</option>
+                </select>
+                <button onclick="updateMilestone()">Update Milestone</button>
+            </div>
+            <div id="trackingResponse" class="response"></div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="box full-width">
+            <h3>📈 6. Analytics & History</h3>
+            <div class="inline-group">
+                <input type="number" id="historyProposalId" placeholder="Proposal ID">
+                <button onclick="getProposalHistory()">Get History</button>
+                <button onclick="getAnalytics()">Get Analytics</button>
+            </div>
+            <div id="analyticsResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:8000";
+        let token = localStorage.getItem('token');
+        let user = JSON.parse(localStorage.getItem('user') || 'null');
+
+        updateUI();
+
+        function updateUI() {
+            if (token && user) {
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('currentUserDisplay').innerHTML = 
+                    `Email: ${user.email}<br>Name: ${user.full_name}<br>Role: ${user.role}`;
+            }
+        }
+
+        function showResponse(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+            element.className = `response ${isError ? 'error' : 'green'}`;
+        }
+
+        async function apiCall(url, options = {}) {
+            try {
+                const response = await fetch(`${API}${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token && { 'Authorization': `Bearer ${token}` }),
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(`${response.status}: ${error.detail || 'Unknown error'}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        }
+
+        // Authentication Functions
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const result = await apiCall('/api/v1/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                showResponse('loginResponse', result);
+                
+                token = result.access_token;
+                user = result.user;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
+                updateUI();
+            } catch (error) {
+                showResponse('loginResponse', error.message, true);
+            }
+        }
+
+        function logout() {
+            token = null;
+            user = null;
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            document.getElementById('userInfo').style.display = 'none';
+        }
+
+        // Quick Test Functions
+        async function testHealth() {
+            try {
+                const result = await apiCall('/health');
+                showResponse('quickResponse', result);
+            } catch (error) {
+                showResponse('quickResponse', error.message, true);
+            }
+        }
+
+        async function listProposals() {
+            try {
+                const result = await apiCall('/api/v1/proposals/');
+                showResponse('quickResponse', result);
+            } catch (error) {
+                showResponse('quickResponse', error.message, true);
+            }
+        }
+
+        async function getProjectsDashboard() {
+            try {
+                const result = await apiCall('/api/v1/proposals/projects/dashboard');
+                showResponse('quickResponse', result);
+            } catch (error) {
+                showResponse('quickResponse', error.message, true);
+            }
+        }
+
+        // Proposal Workflow Functions
+        async function uploadTranscript() {
+            if (!token) {
+                showResponse('transcriptResponse', 'Please login first!', true);
+                return;
+            }
+
+            const projectName = document.getElementById('projectName').value;
+            const clientName = document.getElementById('clientName').value;
+            const phase = document.getElementById('projectPhase').value;
+            const content = document.getElementById('transcriptContent').value;
+
+            try {
+                // Create a blob and form data for file upload
+                const blob = new Blob([content], { type: 'text/plain' });
+                const formData = new FormData();
+                formData.append('file', blob, 'transcript.txt');
+                formData.append('project_name', projectName);
+                formData.append('client_name', clientName);
+                formData.append('phase', phase);
+
+                const response = await fetch(`${API}/api/v1/proposals/upload-transcript`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(`${response.status}: ${error.detail || 'Unknown error'}`);
+                }
+
+                const result = await response.json();
+                showResponse('transcriptResponse', result);
+                
+                // Auto-fill proposal ID for next step
+                document.getElementById('proposalId').value = result.proposal_id;
+            } catch (error) {
+                showResponse('transcriptResponse', error.message, true);
+            }
+        }
+
+        async function generateProposal() {
+            if (!token) {
+                showResponse('proposalResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('proposalId').value;
+            if (!proposalId) {
+                showResponse('proposalResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall('/api/v1/proposals/generate', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        proposal_id: parseInt(proposalId),
+                        requirements: {
+                            scope: "AI automation for customer service",
+                            timeline: "2-3 weeks discovery phase",
+                            deliverables: ["AI demos", "Process mapping", "Implementation plan"]
+                        }
+                    })
+                });
+                
+                showResponse('proposalResponse', result);
+                
+                // Auto-fill IDs for other sections
+                document.getElementById('editProposalId').value = proposalId;
+                document.getElementById('shareProposalId').value = proposalId;
+                document.getElementById('trackProposalId').value = proposalId;
+                document.getElementById('historyProposalId').value = proposalId;
+            } catch (error) {
+                showResponse('proposalResponse', error.message, true);
+            }
+        }
+
+        async function addProposalBlock() {
+            if (!token) {
+                showResponse('editResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('editProposalId').value;
+            const blockType = document.getElementById('blockType').value;
+            const content = document.getElementById('blockContent').value;
+
+            if (!proposalId) {
+                showResponse('editResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/blocks`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        block_type: blockType,
+                        content: content || null,
+                        use_ai_generation: !content,
+                        context: { 
+                            project_focus: "customer service automation",
+                            client_industry: "service industry"
+                        }
+                    })
+                });
+                
+                showResponse('editResponse', result);
+            } catch (error) {
+                showResponse('editResponse', error.message, true);
+            }
+        }
+
+        async function validateProposal() {
+            if (!token) {
+                showResponse('editResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('editProposalId').value;
+            if (!proposalId) {
+                showResponse('editResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/validate`, {
+                    method: 'POST'
+                });
+                
+                showResponse('editResponse', result);
+            } catch (error) {
+                showResponse('editResponse', error.message, true);
+            }
+        }
+
+        async function createShare() {
+            if (!token) {
+                showResponse('shareResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('shareProposalId').value;
+            const shareType = document.getElementById('shareType').value;
+
+            if (!proposalId) {
+                showResponse('shareResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/share`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        share_type: shareType,
+                        expiry_days: 30
+                    })
+                });
+                
+                showResponse('shareResponse', result);
+            } catch (error) {
+                showResponse('shareResponse', error.message, true);
+            }
+        }
+
+        async function exportProposal() {
+            if (!token) {
+                showResponse('shareResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('shareProposalId').value;
+            const format = document.getElementById('exportFormat').value;
+
+            if (!proposalId) {
+                showResponse('shareResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/api/v1/proposals/${proposalId}/export/${format}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(`${response.status}: ${error.detail || 'Unknown error'}`);
+                }
+
+                if (format === 'html' || format === 'markdown') {
+                    const content = await response.text();
+                    showResponse('shareResponse', `Export successful!\n\n${content.substring(0, 500)}...`);
+                } else {
+                    showResponse('shareResponse', `Export successful! File download would start for ${format} format.`);
+                }
+            } catch (error) {
+                showResponse('shareResponse', error.message, true);
+            }
+        }
+
+        async function getProjectStatus() {
+            if (!token) {
+                showResponse('trackingResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('trackProposalId').value;
+            if (!proposalId) {
+                showResponse('trackingResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/project-status`);
+                showResponse('trackingResponse', result);
+            } catch (error) {
+                showResponse('trackingResponse', error.message, true);
+            }
+        }
+
+        async function advancePhase() {
+            if (!token) {
+                showResponse('trackingResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('trackProposalId').value;
+            if (!proposalId) {
+                showResponse('trackingResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/advance-phase`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        completion_notes: "Phase completed successfully"
+                    })
+                });
+                
+                showResponse('trackingResponse', result);
+            } catch (error) {
+                showResponse('trackingResponse', error.message, true);
+            }
+        }
+
+        async function updateMilestone() {
+            if (!token) {
+                showResponse('trackingResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('trackProposalId').value;
+            const milestoneName = document.getElementById('milestoneName').value;
+            const milestoneStatus = document.getElementById('milestoneStatus').value;
+
+            if (!proposalId || !milestoneName) {
+                showResponse('trackingResponse', 'Please enter proposal ID and milestone name', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/update-milestone`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        milestone_name: milestoneName,
+                        milestone_status: milestoneStatus,
+                        milestone_notes: "Updated via test interface"
+                    })
+                });
+                
+                showResponse('trackingResponse', result);
+            } catch (error) {
+                showResponse('trackingResponse', error.message, true);
+            }
+        }
+
+        async function getProposalHistory() {
+            if (!token) {
+                showResponse('analyticsResponse', 'Please login first!', true);
+                return;
+            }
+
+            const proposalId = document.getElementById('historyProposalId').value;
+            if (!proposalId) {
+                showResponse('analyticsResponse', 'Please enter a proposal ID', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/v1/proposals/${proposalId}/history`);
+                showResponse('analyticsResponse', result);
+            } catch (error) {
+                showResponse('analyticsResponse', error.message, true);
+            }
+        }
+
+        async function getAnalytics() {
+            if (!token) {
+                showResponse('analyticsResponse', 'Please login first!', true);
+                return;
+            }
+
+            try {
+                const result = await apiCall('/api/v1/proposals/analytics/summary');
+                showResponse('analyticsResponse', result);
+            } catch (error) {
+                showResponse('analyticsResponse', error.message, true);
+            }
+        }
+    </script>
+</body>
+</html> 
