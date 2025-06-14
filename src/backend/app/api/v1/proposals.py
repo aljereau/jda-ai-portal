@@ -1,10 +1,10 @@
 """
 Proposal management API endpoints.
-Handles transcript upload, AI processing, and proposal generation.
+Handles transcript upload, AI processing, proposal generation, sharing, exports, and audit trail.
 """
 
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
 import os
@@ -15,12 +15,17 @@ import json
 
 from app.core.database import get_db
 from app.core.auth import verify_token, get_current_user
-from app.models.proposal import Proposal, ProposalVersion, ProjectPhase
+from app.models.proposal import (
+    Proposal, ProposalVersion, ProjectTracker, ProposalShare,
+    ProposalExport, ProposalAuditLog
+)
 from app.schemas.proposal import (
     ProposalCreate, ProposalResponse, ProposalUpdate,
     TranscriptUploadResponse, ProposalGenerateRequest,
     ProposalBlockRequest, ProposalBlockResponse,
-    ProposalValidationResponse
+    ProposalValidationResponse, ProposalShareRequest,
+    ProposalShareResponse, ProposalExportResponse,
+    ProposalAuditLogResponse, ProposalAnalyticsResponse
 )
 from app.services.ai_service import AIService
 from app.services.proposal_service import ProposalService
@@ -1170,4 +1175,361 @@ async def get_analytics_summary(
         raise HTTPException(
             status_code=500,
             detail=f"Failed to get analytics summary: {str(e)}"
+        )
+
+
+# Block 3: Enhanced Sharing, Export, and Audit API Endpoints
+
+@router.post("/{proposal_id}/shares", response_model=ProposalShareResponse)
+async def create_proposal_share_enhanced(
+    proposal_id: int,
+    share_request: ProposalShareRequest,
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Create a new proposal share with enhanced permissions and tracking.
+    
+    Args:
+        proposal_id: Proposal ID to share
+        share_request: Share configuration
+        request: HTTP request for audit trail
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        Created share details
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Verify proposal exists and user has access
+        proposal = proposal_service.get_proposal(proposal_id)
+        if not proposal:
+            raise HTTPException(status_code=404, detail="Proposal not found")
+        
+        # Extract client info for audit
+        client_ip = request.client.host if request.client else None
+        user_agent = request.headers.get("user-agent")
+        
+        # Create share
+        share = proposal_service.create_proposal_share(
+            proposal_id=proposal_id,
+            shared_by=current_user["user_id"],
+            shared_with_user_id=share_request.shared_with_user_id,
+            shared_with_email=share_request.shared_with_email,
+            permission_level=share_request.permission_level,
+            can_download=share_request.can_download,
+            can_comment=share_request.can_comment,
+            expires_in_days=share_request.expires_in_days,
+            ip_address=client_ip,
+            user_agent=user_agent
+        )
+        
+        return ProposalShareResponse(
+            id=share.id,
+            proposal_id=share.proposal_id,
+            shared_with_user_id=share.shared_with_user_id,
+            shared_with_email=share.shared_with_email,
+            permission_level=share.permission_level.value,
+            can_download=share.can_download,
+            can_comment=share.can_comment,
+            expires_at=share.expires_at,
+            is_active=share.is_active,
+            access_count=share.access_count,
+            created_at=share.created_at,
+            share_url=f"/shared/proposals/{proposal.share_token}"
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to create proposal share: {str(e)}"
+        )
+
+
+@router.get("/{proposal_id}/shares", response_model=List[ProposalShareResponse])
+async def get_proposal_shares(
+    proposal_id: int,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all shares for a proposal.
+    
+    Args:
+        proposal_id: Proposal ID
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        List of proposal shares
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Verify proposal exists and user has access
+        proposal = proposal_service.get_proposal(proposal_id)
+        if not proposal:
+            raise HTTPException(status_code=404, detail="Proposal not found")
+        
+        shares = proposal_service.get_proposal_shares(proposal_id)
+        
+        return [
+            ProposalShareResponse(
+                id=share.id,
+                proposal_id=share.proposal_id,
+                shared_with_user_id=share.shared_with_user_id,
+                shared_with_email=share.shared_with_email,
+                permission_level=share.permission_level.value,
+                can_download=share.can_download,
+                can_comment=share.can_comment,
+                expires_at=share.expires_at,
+                is_active=share.is_active,
+                access_count=share.access_count,
+                created_at=share.created_at,
+                share_url=f"/shared/proposals/{proposal.share_token}"
+            )
+            for share in shares
+        ]
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve proposal shares: {str(e)}"
+        )
+
+
+@router.delete("/shares/{share_id}")
+async def revoke_proposal_share(
+    share_id: int,
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Revoke a proposal share.
+    
+    Args:
+        share_id: Share ID to revoke
+        request: HTTP request for audit trail
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        Success confirmation
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Extract client info for audit
+        client_ip = request.client.host if request.client else None
+        user_agent = request.headers.get("user-agent")
+        
+        success = proposal_service.revoke_proposal_share(
+            share_id=share_id,
+            revoked_by=current_user["user_id"],
+            ip_address=client_ip,
+            user_agent=user_agent
+        )
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Share not found")
+        
+        return {"message": "Share revoked successfully"}
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to revoke proposal share: {str(e)}"
+        )
+
+
+@router.get("/{proposal_id}/exports", response_model=List[ProposalExportResponse])
+async def get_proposal_exports(
+    proposal_id: int,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all exports for a proposal.
+    
+    Args:
+        proposal_id: Proposal ID
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        List of proposal exports
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Verify proposal exists and user has access
+        proposal = proposal_service.get_proposal(proposal_id)
+        if not proposal:
+            raise HTTPException(status_code=404, detail="Proposal not found")
+        
+        exports = proposal_service.get_proposal_exports(proposal_id)
+        
+        return [
+            ProposalExportResponse(
+                id=export.id,
+                proposal_id=export.proposal_id,
+                format=export.format.value,
+                file_path=export.file_path,
+                file_size_bytes=export.file_size_bytes,
+                version_exported=export.version_exported,
+                download_count=export.download_count,
+                last_downloaded_at=export.last_downloaded_at,
+                created_at=export.created_at,
+                download_url=f"/api/v1/proposals/exports/{export.id}/download"
+            )
+            for export in exports
+        ]
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve proposal exports: {str(e)}"
+        )
+
+
+@router.post("/exports/{export_id}/download")
+async def track_export_download(
+    export_id: int,
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Track a download of an exported proposal.
+    
+    Args:
+        export_id: Export ID
+        request: HTTP request for audit trail
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        Download tracking confirmation
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Extract client info for audit
+        client_ip = request.client.host if request.client else None
+        user_agent = request.headers.get("user-agent")
+        
+        success = proposal_service.track_export_download(
+            export_id=export_id,
+            ip_address=client_ip,
+            user_agent=user_agent
+        )
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Export not found")
+        
+        return {"message": "Download tracked successfully"}
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to track export download: {str(e)}"
+        )
+
+
+@router.get("/{proposal_id}/audit-log", response_model=List[ProposalAuditLogResponse])
+async def get_proposal_audit_log(
+    proposal_id: int,
+    limit: int = 100,
+    action_filter: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get audit log for a proposal.
+    
+    Args:
+        proposal_id: Proposal ID
+        limit: Maximum number of records
+        action_filter: Filter by action type
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        List of audit log entries
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Verify proposal exists and user has access
+        proposal = proposal_service.get_proposal(proposal_id)
+        if not proposal:
+            raise HTTPException(status_code=404, detail="Proposal not found")
+        
+        audit_logs = proposal_service.get_proposal_audit_log(
+            proposal_id=proposal_id,
+            limit=limit,
+            action_filter=action_filter
+        )
+        
+        return [
+            ProposalAuditLogResponse(
+                id=log.id,
+                proposal_id=log.proposal_id,
+                action=log.action.value,
+                description=log.description,
+                details=json.loads(log.details) if log.details else None,
+                ip_address=log.ip_address,
+                user_agent=log.user_agent,
+                old_values=json.loads(log.old_values) if log.old_values else None,
+                new_values=json.loads(log.new_values) if log.new_values else None,
+                performed_by=log.performed_by,
+                created_at=log.created_at
+            )
+            for log in audit_logs
+        ]
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve proposal audit log: {str(e)}"
+        )
+
+
+@router.get("/{proposal_id}/analytics", response_model=ProposalAnalyticsResponse)
+async def get_proposal_analytics(
+    proposal_id: int,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get comprehensive analytics for a proposal.
+    
+    Args:
+        proposal_id: Proposal ID
+        current_user: Authenticated user
+        db: Database session
+        
+    Returns:
+        Proposal analytics data
+    """
+    try:
+        proposal_service = ProposalService(db)
+        
+        # Verify proposal exists and user has access
+        proposal = proposal_service.get_proposal(proposal_id)
+        if not proposal:
+            raise HTTPException(status_code=404, detail="Proposal not found")
+        
+        analytics = proposal_service.get_proposal_analytics(proposal_id)
+        
+        return ProposalAnalyticsResponse(**analytics)
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve proposal analytics: {str(e)}"
         ) 

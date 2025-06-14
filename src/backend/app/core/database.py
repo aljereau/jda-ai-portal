@@ -1,10 +1,14 @@
 """
-Database configuration and connection management for JDA AI Portal.
+Database configuration and session management.
+Handles SQLAlchemy setup, connection management, and model imports.
 """
+
+import os
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from typing import Generator
 import structlog
 
 from .config import get_settings
@@ -12,11 +16,14 @@ from .config import get_settings
 logger = structlog.get_logger(__name__)
 settings = get_settings()
 
+# Database configuration
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./jda_portal.db")
+
 # Create SQLAlchemy engine
 engine = create_engine(
-    settings.get_database_url(),
-    poolclass=StaticPool if "sqlite" in settings.DATABASE_URL else None,
-    connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {},
+    DATABASE_URL,
+    poolclass=StaticPool if "sqlite" in DATABASE_URL else None,
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
     echo=settings.is_development,  # Log SQL queries in development
 )
 
@@ -51,10 +58,12 @@ async def create_tables():
         raise
 
 
-def get_db():
+def get_db() -> Generator:
     """
-    Dependency function to get database session.
-    Yields database session and ensures proper cleanup.
+    Dependency to get database session.
+    
+    Yields:
+        Database session
     """
     db = SessionLocal()
     try:
@@ -76,4 +85,20 @@ async def check_database_connection():
         return True
     except Exception as e:
         logger.error("❌ Database connection failed", error=str(e))
-        return False 
+        return False
+
+
+def drop_tables() -> None:
+    """
+    Drop all database tables.
+    Used for testing and development reset.
+    """
+    Base.metadata.drop_all(bind=engine)
+
+
+def init_database() -> None:
+    """
+    Initialize database with tables and default data.
+    """
+    create_tables()
+    print("Database initialized successfully!") 

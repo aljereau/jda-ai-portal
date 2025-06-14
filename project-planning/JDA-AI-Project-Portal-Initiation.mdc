@@ -46,7 +46,7 @@ To develop a dynamic, AI-guided project portal that eliminates fragmented projec
 ### 3.1. In Scope (Key Features/Deliverables)
 **Phase 0: Intake & Proposal**
 - Client intake form and portal generator
-- Meeting transcription integration (Read.ai)
+- Meeting transcription integration 
 - AI-powered meeting summarizer
 - Dynamic proposal generator with smart templates
 - Live proposal pages with clickable phase cards

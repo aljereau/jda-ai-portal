@@ -4,6 +4,8 @@ Handles business logic and database operations for proposal management.
 """
 
 import json
+import uuid
+import hashlib
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
@@ -11,8 +13,14 @@ import logging
 from datetime import datetime, timedelta
 import os
 
-from app.models.proposal import Proposal, ProposalVersion, ProjectTracker, ProposalTemplate
-from app.models.proposal import ProjectPhaseEnum, ProposalStatusEnum
+from app.models.proposal import (
+    Proposal, ProposalVersion, ProjectTracker, ProposalTemplate,
+    ProposalShare, ProposalExport, ProposalAuditLog
+)
+from app.models.proposal import (
+    ProjectPhaseEnum, ProposalStatusEnum, SharePermissionEnum,
+    ExportFormatEnum, AuditActionEnum
+)
 from app.schemas.proposal import ProposalCreate, ProposalUpdate
 
 # Configure logging
@@ -47,7 +55,9 @@ class ProposalService:
         transcript_path: str,
         created_by: int,
         ai_summary: str,
-        extracted_requirements: Dict[str, Any]
+        extracted_requirements: Dict[str, Any],
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None
     ) -> Proposal:
         """
         Create a new proposal.
@@ -60,6 +70,8 @@ class ProposalService:
             created_by: User ID who created the proposal
             ai_summary: AI-generated summary
             extracted_requirements: Extracted requirements dictionary
+            ip_address: Client IP address for audit
+            user_agent: Client user agent for audit
             
         Returns:
             Created proposal object
@@ -67,6 +79,9 @@ class ProposalService:
         try:
             # Convert phase string to enum
             phase_enum = ProjectPhaseEnum(phase)
+            
+            # Generate unique share token
+            share_token = self._generate_share_token()
             
             # Create proposal
             proposal = Proposal(
@@ -77,7 +92,8 @@ class ProposalService:
                 created_by=created_by,
                 ai_summary=ai_summary,
                 extracted_requirements=json.dumps(extracted_requirements),
-                status=ProposalStatusEnum.DRAFT
+                status=ProposalStatusEnum.DRAFT,
+                share_token=share_token
             )
             
             self.db.add(proposal)
@@ -89,6 +105,14 @@ class ProposalService:
             
             # Create project tracker
             self._create_project_tracker(proposal.id, project_name, client_name, phase_enum, created_by)
+            
+            # Log audit trail
+            self._log_audit_action(
+                proposal.id, AuditActionEnum.CREATED, created_by,
+                f"Proposal created for project: {project_name}",
+                {"project_name": project_name, "client_name": client_name, "phase": phase},
+                ip_address, user_agent
+            )
             
             logger.info(f"Created proposal {proposal.id} for project: {project_name}")
             return proposal
@@ -646,312 +670,420 @@ class ProposalService:
             # Fallback to simple line splitting
             return [line for line in content.split('\n') if line.strip()]
 
-    def create_proposal_share(
+    def _log_audit_action(
         self,
         proposal_id: int,
-        share_type: str,
-        created_by: int,
-        expiry_days: Optional[int] = None,
-        password_protected: bool = False
-    ) -> str:
+        action: AuditActionEnum,
+        performed_by: int,
+        description: str,
+        details: Optional[Dict[str, Any]] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        old_values: Optional[Dict[str, Any]] = None,
+        new_values: Optional[Dict[str, Any]] = None
+    ):
         """
-        Create a shareable link for proposal access.
+        Log an audit action for a proposal.
         
         Args:
             proposal_id: Proposal ID
-            share_type: Type of sharing
-            created_by: User who created the share
-            expiry_days: Days until expiry
-            password_protected: Whether password protection is enabled
-            
-        Returns:
-            Share token
+            action: Audit action type
+            performed_by: User ID who performed the action
+            description: Action description
+            details: Additional action details
+            ip_address: Client IP address
+            user_agent: Client user agent
+            old_values: Previous values (for updates)
+            new_values: New values (for updates)
         """
         try:
-            import uuid
-            import hashlib
-            
-            # Generate unique share token
-            share_token = str(uuid.uuid4())
-            
-            # Store share record in metadata (in production, use dedicated table)
-            proposal = self.get_proposal(proposal_id)
-            if not proposal:
-                raise ProposalServiceError(f"Proposal {proposal_id} not found")
-            
-            current_metadata = {}
-            if hasattr(proposal, 'metadata') and proposal.metadata:
-                current_metadata = json.loads(proposal.metadata)
-            
-            if 'shares' not in current_metadata:
-                current_metadata['shares'] = []
-            
-            share_record = {
-                "token": share_token,
-                "share_type": share_type,
-                "created_by": created_by,
-                "created_at": datetime.utcnow().isoformat(),
-                "expires_at": (datetime.utcnow() + timedelta(days=expiry_days)).isoformat() if expiry_days else None,
-                "password_protected": password_protected,
-                "access_count": 0
-            }
-            
-            current_metadata['shares'].append(share_record)
-            proposal.metadata = json.dumps(current_metadata)
-            
+            audit_log = ProposalAuditLog(
+                proposal_id=proposal_id,
+                action=action,
+                description=description,
+                details=json.dumps(details) if details else None,
+                ip_address=ip_address,
+                user_agent=user_agent,
+                old_values=json.dumps(old_values) if old_values else None,
+                new_values=json.dumps(new_values) if new_values else None,
+                performed_by=performed_by
+            )
+            self.db.add(audit_log)
             self.db.commit()
             
-            logger.info(f"Created share for proposal {proposal_id}: {share_token}")
-            return share_token
+            logger.info(f"Logged audit action for proposal {proposal_id}: {action}")
+            
+        except Exception as e:
+            logger.error(f"Error logging audit action: {str(e)}")
+
+    def create_proposal_share(
+        self,
+        proposal_id: int,
+        shared_by: int,
+        shared_with_user_id: Optional[int] = None,
+        shared_with_email: Optional[str] = None,
+        permission_level: str = "view_only",
+        can_download: bool = False,
+        can_comment: bool = False,
+        expires_in_days: Optional[int] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None
+    ) -> ProposalShare:
+        """
+        Create a new proposal share.
+        
+        Args:
+            proposal_id: Proposal ID to share
+            shared_by: User ID who is sharing
+            shared_with_user_id: User ID to share with (for internal users)
+            shared_with_email: Email to share with (for external users)
+            permission_level: Permission level (view_only, comment, edit, full_access)
+            can_download: Whether recipient can download
+            can_comment: Whether recipient can comment
+            expires_in_days: Number of days until expiration
+            ip_address: Client IP address
+            user_agent: Client user agent
+            
+        Returns:
+            Created ProposalShare object
+        """
+        try:
+            # Calculate expiration date
+            expires_at = None
+            if expires_in_days:
+                expires_at = datetime.utcnow() + timedelta(days=expires_in_days)
+            
+            # Create share
+            share = ProposalShare(
+                proposal_id=proposal_id,
+                shared_with_user_id=shared_with_user_id,
+                shared_with_email=shared_with_email,
+                permission_level=SharePermissionEnum(permission_level),
+                can_download=can_download,
+                can_comment=can_comment,
+                expires_at=expires_at,
+                shared_by=shared_by
+            )
+            
+            self.db.add(share)
+            self.db.commit()
+            self.db.refresh(share)
+            
+            # Log audit trail
+            share_details = {
+                "shared_with_user_id": shared_with_user_id,
+                "shared_with_email": shared_with_email,
+                "permission_level": permission_level,
+                "expires_at": expires_at.isoformat() if expires_at else None
+            }
+            
+            self._log_audit_action(
+                proposal_id, AuditActionEnum.SHARED, shared_by,
+                f"Proposal shared with {'user' if shared_with_user_id else 'email'}: {shared_with_user_id or shared_with_email}",
+                share_details, ip_address, user_agent
+            )
+            
+            logger.info(f"Created share {share.id} for proposal {proposal_id}")
+            return share
             
         except Exception as e:
             self.db.rollback()
             logger.error(f"Error creating proposal share: {str(e)}")
-            raise ProposalServiceError(f"Failed to create share: {str(e)}")
+            raise ProposalServiceError(f"Failed to create proposal share: {str(e)}")
 
-    def export_proposal(
+    def get_proposal_shares(self, proposal_id: int) -> List[ProposalShare]:
+        """
+        Get all shares for a proposal.
+        
+        Args:
+            proposal_id: Proposal ID
+            
+        Returns:
+            List of ProposalShare objects
+        """
+        try:
+            return self.db.query(ProposalShare).filter(
+                ProposalShare.proposal_id == proposal_id,
+                ProposalShare.is_active == True
+            ).all()
+        except Exception as e:
+            logger.error(f"Error retrieving proposal shares: {str(e)}")
+            raise ProposalServiceError(f"Failed to retrieve proposal shares: {str(e)}")
+
+    def revoke_proposal_share(
+        self,
+        share_id: int,
+        revoked_by: int,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None
+    ) -> bool:
+        """
+        Revoke a proposal share.
+        
+        Args:
+            share_id: Share ID to revoke
+            revoked_by: User ID who is revoking
+            ip_address: Client IP address
+            user_agent: Client user agent
+            
+        Returns:
+            True if successful
+        """
+        try:
+            share = self.db.query(ProposalShare).filter(ProposalShare.id == share_id).first()
+            if not share:
+                raise ProposalServiceError(f"Share {share_id} not found")
+            
+            share.is_active = False
+            self.db.commit()
+            
+            # Log audit trail
+            self._log_audit_action(
+                share.proposal_id, AuditActionEnum.ACCESS_REVOKED, revoked_by,
+                f"Share access revoked for share ID: {share_id}",
+                {"share_id": share_id, "shared_with": share.shared_with_email or share.shared_with_user_id},
+                ip_address, user_agent
+            )
+            
+            logger.info(f"Revoked share {share_id}")
+            return True
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error revoking proposal share: {str(e)}")
+            raise ProposalServiceError(f"Failed to revoke proposal share: {str(e)}")
+
+    def track_proposal_export(
         self,
         proposal_id: int,
         format: str,
-        include_metadata: bool = True
-    ) -> str:
+        file_path: str,
+        exported_by: int,
+        export_settings: Optional[Dict[str, Any]] = None,
+        version_exported: Optional[int] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None
+    ) -> ProposalExport:
         """
-        Export proposal in specified format.
+        Track a proposal export.
         
         Args:
             proposal_id: Proposal ID
             format: Export format (html, pdf, docx, markdown)
-            include_metadata: Whether to include metadata
+            file_path: Path to exported file
+            exported_by: User ID who exported
+            export_settings: Export settings used
+            version_exported: Version number exported
+            ip_address: Client IP address
+            user_agent: Client user agent
             
         Returns:
-            Export content or file path
+            Created ProposalExport object
         """
         try:
+            # Get file size
+            file_size_bytes = None
+            if os.path.exists(file_path):
+                file_size_bytes = os.path.getsize(file_path)
+            
+            # Create export record
+            export_record = ProposalExport(
+                proposal_id=proposal_id,
+                format=ExportFormatEnum(format),
+                file_path=file_path,
+                file_size_bytes=file_size_bytes,
+                export_settings=json.dumps(export_settings) if export_settings else None,
+                version_exported=version_exported,
+                exported_by=exported_by
+            )
+            
+            self.db.add(export_record)
+            
+            # Update proposal export tracking
             proposal = self.get_proposal(proposal_id)
-            if not proposal:
-                raise ProposalServiceError(f"Proposal {proposal_id} not found")
+            if proposal:
+                proposal.last_exported_at = datetime.utcnow()
+                proposal.export_count = (proposal.export_count or 0) + 1
             
-            # Log export activity
-            self._log_export_activity(proposal_id, format)
+            self.db.commit()
+            self.db.refresh(export_record)
             
-            if format == "html":
-                return self._export_to_html(proposal, include_metadata)
-            elif format == "markdown":
-                return self._export_to_markdown(proposal, include_metadata)
-            elif format == "pdf":
-                return self._export_to_pdf(proposal, include_metadata)
-            elif format == "docx":
-                return self._export_to_docx(proposal, include_metadata)
-            else:
-                raise ProposalServiceError(f"Unsupported export format: {format}")
-                
+            # Log audit trail
+            export_details = {
+                "format": format,
+                "file_size_bytes": file_size_bytes,
+                "version_exported": version_exported,
+                "export_settings": export_settings
+            }
+            
+            self._log_audit_action(
+                proposal_id, AuditActionEnum.EXPORTED, exported_by,
+                f"Proposal exported to {format.upper()} format",
+                export_details, ip_address, user_agent
+            )
+            
+            logger.info(f"Tracked export {export_record.id} for proposal {proposal_id}")
+            return export_record
+            
         except Exception as e:
-            logger.error(f"Error exporting proposal: {str(e)}")
-            raise ProposalServiceError(f"Failed to export proposal: {str(e)}")
+            self.db.rollback()
+            logger.error(f"Error tracking proposal export: {str(e)}")
+            raise ProposalServiceError(f"Failed to track proposal export: {str(e)}")
 
-    def get_proposal_complete_history(self, proposal_id: int) -> Dict[str, Any]:
+    def get_proposal_exports(self, proposal_id: int) -> List[ProposalExport]:
         """
-        Get complete proposal history including versions, shares, and modifications.
+        Get all exports for a proposal.
         
         Args:
             proposal_id: Proposal ID
             
         Returns:
-            Complete history data
+            List of ProposalExport objects
+        """
+        try:
+            return self.db.query(ProposalExport).filter(
+                ProposalExport.proposal_id == proposal_id
+            ).order_by(ProposalExport.created_at.desc()).all()
+        except Exception as e:
+            logger.error(f"Error retrieving proposal exports: {str(e)}")
+            raise ProposalServiceError(f"Failed to retrieve proposal exports: {str(e)}")
+
+    def track_export_download(
+        self,
+        export_id: int,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None
+    ) -> bool:
+        """
+        Track a download of an exported proposal.
+        
+        Args:
+            export_id: Export ID
+            ip_address: Client IP address
+            user_agent: Client user agent
+            
+        Returns:
+            True if successful
+        """
+        try:
+            export_record = self.db.query(ProposalExport).filter(ProposalExport.id == export_id).first()
+            if not export_record:
+                raise ProposalServiceError(f"Export {export_id} not found")
+            
+            export_record.download_count = (export_record.download_count or 0) + 1
+            export_record.last_downloaded_at = datetime.utcnow()
+            
+            self.db.commit()
+            
+            logger.info(f"Tracked download for export {export_id}")
+            return True
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error tracking export download: {str(e)}")
+            raise ProposalServiceError(f"Failed to track export download: {str(e)}")
+
+    def get_proposal_audit_log(
+        self,
+        proposal_id: int,
+        limit: int = 100,
+        action_filter: Optional[str] = None
+    ) -> List[ProposalAuditLog]:
+        """
+        Get audit log for a proposal.
+        
+        Args:
+            proposal_id: Proposal ID
+            limit: Maximum number of records
+            action_filter: Filter by action type
+            
+        Returns:
+            List of ProposalAuditLog objects
+        """
+        try:
+            query = self.db.query(ProposalAuditLog).filter(
+                ProposalAuditLog.proposal_id == proposal_id
+            )
+            
+            if action_filter:
+                query = query.filter(ProposalAuditLog.action == AuditActionEnum(action_filter))
+            
+            return query.order_by(ProposalAuditLog.created_at.desc()).limit(limit).all()
+            
+        except Exception as e:
+            logger.error(f"Error retrieving proposal audit log: {str(e)}")
+            raise ProposalServiceError(f"Failed to retrieve proposal audit log: {str(e)}")
+
+    def get_proposal_analytics(self, proposal_id: int) -> Dict[str, Any]:
+        """
+        Get comprehensive analytics for a proposal.
+        
+        Args:
+            proposal_id: Proposal ID
+            
+        Returns:
+            Analytics dictionary
         """
         try:
             proposal = self.get_proposal(proposal_id)
             if not proposal:
                 raise ProposalServiceError(f"Proposal {proposal_id} not found")
             
-            # Get versions
+            # Get shares analytics
+            shares = self.get_proposal_shares(proposal_id)
+            active_shares = [s for s in shares if s.is_active]
+            
+            # Get exports analytics
+            exports = self.get_proposal_exports(proposal_id)
+            total_downloads = sum(e.download_count or 0 for e in exports)
+            
+            # Get versions analytics
             versions = self.get_proposal_versions(proposal_id)
             
-            # Get metadata for shares and other history
-            metadata = {}
-            if hasattr(proposal, 'metadata') and proposal.metadata:
-                metadata = json.loads(proposal.metadata)
+            # Get audit log analytics
+            audit_logs = self.get_proposal_audit_log(proposal_id)
             
-            history = {
-                "versions": [
-                    {
-                        "version_number": v.version_number,
-                        "created_at": v.created_at.isoformat(),
-                        "created_by": v.created_by,
-                        "change_summary": v.change_summary,
-                        "is_current": v.is_current
-                    } for v in versions
-                ],
-                "shares": metadata.get('shares', []),
-                "modifications": metadata.get('modifications', []),
-                "validations": metadata.get('validation_history', []),
-                "exports": metadata.get('export_history', [])
+            return {
+                "proposal_id": proposal_id,
+                "created_at": proposal.created_at.isoformat(),
+                "last_updated": proposal.updated_at.isoformat(),
+                "status": proposal.status.value,
+                "phase": proposal.phase.value,
+                "sharing": {
+                    "total_shares": len(shares),
+                    "active_shares": len(active_shares),
+                    "total_access_count": sum(s.access_count or 0 for s in shares)
+                },
+                "exports": {
+                    "total_exports": len(exports),
+                    "total_downloads": total_downloads,
+                    "formats_used": list(set(e.format.value for e in exports)),
+                    "last_exported": proposal.last_exported_at.isoformat() if proposal.last_exported_at else None
+                },
+                "versions": {
+                    "total_versions": len(versions),
+                    "current_version": max(v.version_number for v in versions) if versions else 0
+                },
+                "activity": {
+                    "total_actions": len(audit_logs),
+                    "recent_actions": [
+                        {
+                            "action": log.action.value,
+                            "description": log.description,
+                            "timestamp": log.created_at.isoformat()
+                        }
+                        for log in audit_logs[:5]
+                    ]
+                }
             }
             
-            return history
-            
         except Exception as e:
-            logger.error(f"Error getting proposal history: {str(e)}")
-            raise ProposalServiceError(f"Failed to get history: {str(e)}")
+            logger.error(f"Error retrieving proposal analytics: {str(e)}")
+            raise ProposalServiceError(f"Failed to retrieve proposal analytics: {str(e)}")
 
-    def duplicate_proposal(
-        self,
-        original_proposal_id: int,
-        new_project_name: str,
-        new_client_name: str,
-        created_by: int
-    ) -> Proposal:
-        """
-        Create a duplicate of an existing proposal.
-        
-        Args:
-            original_proposal_id: ID of proposal to duplicate
-            new_project_name: Name for new project
-            new_client_name: Client name for new proposal
-            created_by: User creating the duplicate
-            
-        Returns:
-            New proposal object
-        """
-        try:
-            original = self.get_proposal(original_proposal_id)
-            if not original:
-                raise ProposalServiceError(f"Original proposal {original_proposal_id} not found")
-            
-            # Create new proposal with copied content
-            new_proposal = Proposal(
-                project_name=new_project_name,
-                client_name=new_client_name,
-                phase=original.phase,
-                content=original.content,
-                ai_summary=f"Duplicated from {original.project_name}: {original.ai_summary}" if original.ai_summary else None,
-                extracted_requirements=original.extracted_requirements,
-                status=ProposalStatusEnum.DRAFT,
-                created_by=created_by
-            )
-            
-            self.db.add(new_proposal)
-            self.db.commit()
-            self.db.refresh(new_proposal)
-            
-            # Create initial version for new proposal
-            self._create_initial_version(new_proposal.id, created_by)
-            
-            # Create project tracker for new proposal
-            self._create_project_tracker(
-                new_proposal.id, 
-                new_project_name, 
-                new_client_name, 
-                original.phase, 
-                created_by
-            )
-            
-            # Log duplication activity
-            self._log_duplication_activity(original_proposal_id, new_proposal.id, created_by)
-            
-            logger.info(f"Duplicated proposal {original_proposal_id} to {new_proposal.id}")
-            return new_proposal
-            
-        except Exception as e:
-            self.db.rollback()
-            logger.error(f"Error duplicating proposal: {str(e)}")
-            raise ProposalServiceError(f"Failed to duplicate proposal: {str(e)}")
-
-    def _export_to_html(self, proposal: Proposal, include_metadata: bool) -> str:
-        """Export proposal to HTML format."""
-        content = proposal.content or f"<h1>{proposal.project_name}</h1><p>No content available.</p>"
-        
-        if include_metadata:
-            metadata_html = f"""
-            <div class="proposal-metadata">
-                <h2>Proposal Metadata</h2>
-                <p><strong>Project:</strong> {proposal.project_name}</p>
-                <p><strong>Client:</strong> {proposal.client_name}</p>
-                <p><strong>Phase:</strong> {proposal.phase.value}</p>
-                <p><strong>Status:</strong> {proposal.status.value}</p>
-                <p><strong>Created:</strong> {proposal.created_at}</p>
-                <p><strong>Last Updated:</strong> {proposal.updated_at}</p>
-            </div>
-            """
-            content = metadata_html + content
-        
-        return f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>{proposal.project_name} - {proposal.client_name}</title>
-            <style>
-                body {{ font-family: Arial, sans-serif; margin: 20px; }}
-                .proposal-metadata {{ background: #f5f5f5; padding: 15px; margin-bottom: 20px; }}
-            </style>
-        </head>
-        <body>
-            {content}
-        </body>
-        </html>
-        """
-
-    def _export_to_markdown(self, proposal: Proposal, include_metadata: bool) -> str:
-        """Export proposal to Markdown format."""
-        import html2text
-        
-        content = proposal.content or f"# {proposal.project_name}\n\nNo content available."
-        
-        # Convert HTML to Markdown
-        h = html2text.HTML2Text()
-        h.ignore_links = False
-        markdown_content = h.handle(content)
-        
-        if include_metadata:
-            metadata_md = f"""
-# {proposal.project_name} - {proposal.client_name}
-
-**Project:** {proposal.project_name}  
-**Client:** {proposal.client_name}  
-**Phase:** {proposal.phase.value}  
-**Status:** {proposal.status.value}  
-**Created:** {proposal.created_at}  
-**Last Updated:** {proposal.updated_at}  
-
----
-
-"""
-            markdown_content = metadata_md + markdown_content
-        
-        return markdown_content
-
-    def _export_to_pdf(self, proposal: Proposal, include_metadata: bool) -> str:
-        """Export proposal to PDF format. Returns file path."""
-        # This would require libraries like weasyprint or reportlab
-        # For now, return a placeholder path
-        export_dir = "exports/pdf"
-        os.makedirs(export_dir, exist_ok=True)
-        
-        filename = f"{proposal.project_name}_{proposal.client_name}_proposal.pdf"
-        file_path = os.path.join(export_dir, filename)
-        
-        # In production, generate actual PDF here
-        # For now, create a placeholder file
-        with open(file_path, 'w') as f:
-            f.write(f"PDF export for {proposal.project_name} - {proposal.client_name}")
-        
-        return file_path
-
-    def _export_to_docx(self, proposal: Proposal, include_metadata: bool) -> str:
-        """Export proposal to DOCX format. Returns file path."""
-        # This would require python-docx library
-        export_dir = "exports/docx"
-        os.makedirs(export_dir, exist_ok=True)
-        
-        filename = f"{proposal.project_name}_{proposal.client_name}_proposal.docx"
-        file_path = os.path.join(export_dir, filename)
-        
-        # In production, generate actual DOCX here
-        # For now, create a placeholder file
-        with open(file_path, 'w') as f:
-            f.write(f"DOCX export for {proposal.project_name} - {proposal.client_name}")
-        
-        return file_path
+    def _generate_share_token(self) -> str:
+        """Generate a unique share token."""
+        return str(uuid.uuid4())
 
     def _log_export_activity(self, proposal_id: int, format: str):
         """Log export activity to proposal metadata."""

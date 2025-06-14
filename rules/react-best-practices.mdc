@@ -1,0 +1,185 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# React Project Best Practices Rule
+
+## I. Rule Metadata (Frontmatter)
+
+```yaml
+---
+ruleId: "react-best-practices-001"
+description: "Enforces best practices for planning, structuring, and implementing React projects to maximize reliability and maintainability."
+severity: "ERROR"
+globs: "src/frontend/**/*, src/frontend/src/**/*"
+alwaysApply: true
+tags: "react, frontend, planning, state-management, testing, typescript, architecture"
+relatedRules: "code-quality-pep8-python-001, code-quality-typehints-python-001"
+autoFixable: "SUGGEST_ONLY"
+version: "1.0"
+lastUpdated: "2024-06-13"
+---
+```
+
+## II. Rule Definition & Explanation
+
+### A. Rule Overview & Rationale  
+Purpose: This rule ensures React projects are planned, structured, and implemented using industry best practices, from initial state planning to robust implementation.  
+Rationale/Benefit: Following these practices prevents common bugs, reduces technical debt, and ensures code is maintainable, scalable, and easy to onboard for new developers. It also improves developer experience and end-user reliability.
+
+### B. Detailed Requirements & Specifications  
+Requirement 1: **Pre-Implementation Planning**  
+- Define core user flows and UI/UX wireframes before coding.
+- Identify all major pages, components, and their relationships.
+- Document API contracts and data requirements.
+
+Requirement 2: **State Management Strategy**  
+- Use React Context, Zustand, Redux Toolkit, or TanStack Query for state management as appropriate.
+- Avoid prop drilling by using context or state libraries for shared/global state.
+- Keep local state close to where it is used.
+
+Requirement 3: **Type Safety**  
+- Use TypeScript for all components, props, and state.
+- Define clear interfaces/types for props and API responses.
+
+Requirement 4: **Component Design**  
+- Use functional components and React hooks.
+- Keep components small, focused, and reusable.
+- Separate presentational and container (logic) components.
+
+Requirement 5: **Testing**  
+- Write unit tests for all components (Jest + React Testing Library).
+- Add end-to-end tests for critical user flows (Cypress or Playwright).
+
+Requirement 6: **Linting & Formatting**  
+- Enforce code style with ESLint and Prettier.
+- Fix all linter errors before merging code.
+
+Requirement 7: **Documentation**  
+- Document component usage and props (JSDoc or in README).
+- Maintain up-to-date README with setup, scripts, and architecture overview.
+
+Requirement 8: **Version Control & CI**  
+- Use feature branches and Pull Requests for all changes.
+- Run tests and linting in CI before merging.
+
+### C. Examples of Compliance (✅ DO)
+
+Example 1: Planning before coding  
+// ✅ DO: Create a wireframe and document API contracts before starting implementation
+```
+# Wireframe: Login Page
+- Email input
+- Password input
+- Login button
+
+# API Contract
+POST /api/login
+Request: { email: string, password: string }
+Response: { token: string, user: { id: string, name: string } }
+```
+
+Example 2: Type-safe functional component  
+// ✅ DO: Use TypeScript and define prop types
+```tsx
+import React from 'react';
+
+type UserCardProps = {
+  name: string;
+  email: string;
+};
+
+const UserCard: React.FC<UserCardProps> = ({ name, email }) => (
+  <div>
+    <h2>{name}</h2>
+    <p>{email}</p>
+  </div>
+);
+export default UserCard;
+```
+
+Example 3: State management with Context  
+// ✅ DO: Use React Context for global state
+```tsx
+import React, { createContext, useContext, useState } from 'react';
+
+type AuthContextType = { user: string | null; setUser: (u: string | null) => void };
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider: React.FC = ({ children }) => {
+  const [user, setUser] = useState<string | null>(null);
+  return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>;
+};
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
+};
+```
+
+Example 4: Unit test for a component  
+// ✅ DO: Write tests for components
+```tsx
+import { render, screen } from '@testing-library/react';
+import UserCard from './UserCard';
+
+test('renders user name and email', () => {
+  render(<UserCard name="Alice" email="alice@example.com" />);
+  expect(screen.getByText('Alice')).toBeInTheDocument();
+  expect(screen.getByText('alice@example.com')).toBeInTheDocument();
+});
+```
+
+### D. Examples of Non-Compliance (❌ DON'T / Anti-Patterns)
+
+Anti-Example 1: No planning or API contract  
+// ❌ DON'T: Start coding without a plan or API documentation
+
+Anti-Example 2: No type safety  
+// ❌ DON'T: Use plain JS and omit prop types
+```jsx
+function UserCard(props) {
+  return <div>{props.name}</div>;
+}
+```
+
+Anti-Example 3: Prop drilling for global state  
+// ❌ DON'T: Pass state through many layers unnecessarily
+```tsx
+// ...
+<Parent user={user} setUser={setUser} />
+// ...
+```
+
+Anti-Example 4: No tests  
+// ❌ DON'T: Merge code without tests
+
+Anti-Example 5: Large, unfocused components  
+// ❌ DON'T: Write components that do too much
+
+### E. Automated Correction Logic / Suggestions (If autoFixable is not NONE)
+
+For Violation of Requirement 2 (State Management):
+Detection Pattern: Prop drilling of state through 3+ component layers.
+Suggested Fix Description: Refactor to use React Context or a state management library for shared state.
+
+For Violation of Requirement 3 (Type Safety):
+Detection Pattern: Components without TypeScript types for props.
+Suggested Fix Description: Add TypeScript interfaces/types for all component props and state.
+
+For Violation of Requirement 5 (Testing):
+Detection Pattern: Components or pages without associated test files.
+Suggested Fix Description: Add unit tests using React Testing Library and Jest.
+
+### F. File & Rule References
+
+Related Rules: See @code-quality-pep8-python-001.mdc, @code-quality-typehints-python-001.mdc
+Code Examples in Project:
+- Correct usage: @src/frontend/src/components/UserCard.tsx
+- Anti-pattern to avoid: @src/frontend/src/components/OldUserCard.js
+
+## III. Rule Maintenance Log
+
+[2024-06-13] - v1.0 - AI: Initial creation of React best practices rule for planning, state, and implementation.
+
