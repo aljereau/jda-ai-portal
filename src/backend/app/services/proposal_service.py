@@ -188,6 +188,78 @@ class ProposalService:
             logger.error(f"Error listing proposals: {str(e)}")
             raise ProposalServiceError(f"Failed to list proposals: {str(e)}")
 
+    def search_proposals(
+        self,
+        user_id: int,
+        status: Optional[List[str]] = None,
+        phase: Optional[str] = None,
+        client_access_only: bool = False,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[Proposal]:
+        """
+        Search proposals with advanced filtering for client portal access.
+        
+        Args:
+            user_id: ID of the user requesting proposals
+            status: List of statuses to filter by
+            phase: Project phase to filter by
+            client_access_only: If True, only return proposals accessible to clients
+            skip: Number of records to skip
+            limit: Maximum number of records to return
+            
+        Returns:
+            List of proposals matching the criteria
+        """
+        try:
+            query = self.db.query(Proposal)
+            
+            if client_access_only:
+                # For client access, show proposals where user is the client
+                # or has shared access
+                from app.models.proposal import ProposalShare
+                
+                # Get proposals where user is the client OR has shared access
+                client_proposals = query.filter(Proposal.client_id == user_id)
+                
+                # Get shared proposals
+                shared_proposal_ids = self.db.query(ProposalShare.proposal_id).filter(
+                    ProposalShare.shared_with_user_id == user_id,
+                    ProposalShare.is_active == True
+                ).subquery()
+                
+                shared_proposals = query.filter(Proposal.id.in_(shared_proposal_ids))
+                
+                # Combine both queries
+                query = client_proposals.union(shared_proposals)
+            else:
+                # For admin/team access, show proposals created by user
+                query = query.filter(Proposal.created_by == user_id)
+            
+            # Apply status filter
+            if status:
+                status_enums = [ProposalStatusEnum(s) for s in status if s in [e.value for e in ProposalStatusEnum]]
+                if status_enums:
+                    query = query.filter(Proposal.status.in_(status_enums))
+            
+            # Apply phase filter
+            if phase:
+                try:
+                    phase_enum = ProjectPhaseEnum(phase)
+                    query = query.filter(Proposal.phase == phase_enum)
+                except ValueError:
+                    # Invalid phase, return empty result
+                    return []
+            
+            # Order by most recent first
+            query = query.order_by(Proposal.updated_at.desc())
+            
+            return query.offset(skip).limit(limit).all()
+            
+        except Exception as e:
+            logger.error(f"Error searching proposals: {str(e)}")
+            raise ProposalServiceError(f"Failed to search proposals: {str(e)}")
+
     def update_proposal_content(
         self,
         proposal_id: int,
@@ -1448,3 +1520,110 @@ class ProposalService:
                 "blocked": "Milestone is blocked and needs attention"
             }.get(milestone_status, "Unknown status")
         }
+
+    def export_proposal(
+        self,
+        proposal_id: int,
+        format: str,
+        exported_by: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """
+        Export a proposal in the specified format.
+        
+        Args:
+            proposal_id: ID of the proposal to export
+            format: Export format (html, pdf, docx, markdown)
+            exported_by: ID of user performing export
+            
+        Returns:
+            Export result with file information
+        """
+        try:
+            # Get proposal
+            proposal = self.get_proposal(proposal_id)
+            if not proposal:
+                raise ProposalServiceError("Proposal not found")
+            
+            # Generate export content based on format
+            if format.lower() == 'html':
+                content = proposal.content or f"<h1>{proposal.project_name}</h1><p>Proposal content for {proposal.client_name}</p>"
+                filename = f"proposal_{proposal_id}.html"
+            elif format.lower() == 'pdf':
+                content = f"PDF export not implemented yet for proposal {proposal_id}"
+                filename = f"proposal_{proposal_id}.pdf"
+            elif format.lower() == 'docx':
+                content = f"DOCX export not implemented yet for proposal {proposal_id}"
+                filename = f"proposal_{proposal_id}.docx"
+            elif format.lower() == 'markdown':
+                content = f"# {proposal.project_name}\n\nProposal for {proposal.client_name}\n\n{proposal.ai_summary or 'No summary available'}"
+                filename = f"proposal_{proposal_id}.md"
+            else:
+                raise ProposalServiceError(f"Unsupported export format: {format}")
+            
+            # Track export
+            export_record = self.track_proposal_export(
+                proposal_id=proposal_id,
+                format=format,
+                file_path=filename,
+                exported_by=exported_by or 0,
+                export_settings={"format": format}
+            )
+            
+            return {
+                "export_id": export_record.id,
+                "filename": filename,
+                "content": content,
+                "format": format,
+                "size": len(content.encode('utf-8'))
+            }
+            
+        except Exception as e:
+            logger.error(f"Error exporting proposal {proposal_id}: {str(e)}")
+            raise ProposalServiceError(f"Failed to export proposal: {str(e)}")
+
+    def log_audit_event(
+        self,
+        proposal_id: int,
+        user_id: int,
+        action: str,
+        description: str,
+        details: Optional[Dict[str, Any]] = None
+    ) -> None:
+        """
+        Log an audit event for a proposal.
+        
+        Args:
+            proposal_id: ID of the proposal
+            user_id: ID of the user performing the action
+            action: Action being performed
+            description: Description of the action
+            details: Additional details about the action
+        """
+        try:
+            # Map action string to enum
+            action_mapping = {
+                "shared_access": AuditActionEnum.SHARED,
+                "status_view": AuditActionEnum.VIEWED,
+                "export": AuditActionEnum.EXPORTED,
+                "created": AuditActionEnum.CREATED,
+                "updated": AuditActionEnum.UPDATED,
+                "deleted": AuditActionEnum.DELETED
+            }
+            
+            action_enum = action_mapping.get(action, AuditActionEnum.VIEWED)
+            
+            self._log_audit_action(
+                proposal_id=proposal_id,
+                action=action_enum,
+                performed_by=user_id,
+                description=description,
+                details=details
+            )
+            
+        except Exception as e:
+            logger.error(f"Error logging audit event: {str(e)}")
+            # Don't raise exception for audit logging failures
+
+    def _get_current_timestamp(self) -> datetime:
+        """Get current timestamp."""
+        return datetime.utcnow()

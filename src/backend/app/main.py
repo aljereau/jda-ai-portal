@@ -20,6 +20,7 @@ sys.path.append(str(Path(__file__).parent))
 from api.v1.auth import router as auth_router
 from api.v1.users import router as users_router
 from api.v1.proposals import router as proposals_router
+from api.v1.client_portal import router as client_portal_router
 
 # Configure logging
 logging.basicConfig(
@@ -51,6 +52,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users_router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(proposals_router, prefix="/api/v1/proposals", tags=["Proposals"])
+app.include_router(client_portal_router, prefix="/api/v1", tags=["Client Portal"])
 
 @app.get("/")
 async def root() -> Dict[str, str]:
