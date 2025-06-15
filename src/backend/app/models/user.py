@@ -82,6 +82,7 @@ class User(Base):
     
     # Relationships
     proposals = relationship("Proposal", back_populates="creator")
+    uploaded_files = relationship("File", back_populates="uploaded_by")
     # projects = relationship("Project", secondary="project_users", back_populates="members")
     # created_projects = relationship("Project", back_populates="created_by")
     # client_profile = relationship("Client", back_populates="user", uselist=False)

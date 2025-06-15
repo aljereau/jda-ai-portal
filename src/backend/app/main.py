@@ -21,6 +21,8 @@ from api.v1.auth import router as auth_router
 from api.v1.users import router as users_router
 from api.v1.proposals import router as proposals_router
 from api.v1.client_portal import router as client_portal_router
+from api.v1.team_dashboard import router as team_dashboard_router
+from api.v1.file_management import router as file_management_router
 
 # Configure logging
 logging.basicConfig(
@@ -53,6 +55,8 @@ app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users_router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(proposals_router, prefix="/api/v1/proposals", tags=["Proposals"])
 app.include_router(client_portal_router, prefix="/api/v1", tags=["Client Portal"])
+app.include_router(team_dashboard_router, prefix="/api/v1", tags=["Team Dashboard"])
+app.include_router(file_management_router, prefix="/api/v1", tags=["File Management"])
 
 @app.get("/")
 async def root() -> Dict[str, str]:

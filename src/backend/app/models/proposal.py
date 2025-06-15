@@ -99,6 +99,7 @@ class Proposal(Base):
     shares = relationship("ProposalShare", back_populates="proposal", cascade="all, delete-orphan")
     exports = relationship("ProposalExport", back_populates="proposal", cascade="all, delete-orphan")
     audit_logs = relationship("ProposalAuditLog", back_populates="proposal", cascade="all, delete-orphan")
+    files = relationship("File", back_populates="proposal")
     
     def __repr__(self) -> str:
         """String representation of proposal."""
