@@ -1139,4 +1139,312 @@ class ProposalService:
             self.db.commit()
             
         except Exception as e:
-            logger.error(f"Error logging duplication activity: {str(e)}") 
+            logger.error(f"Error logging duplication activity: {str(e)}")
+
+    # Block 4: Project Tracking Integration Methods
+    
+    def get_detailed_project_status(self, proposal_id: int) -> Dict[str, Any]:
+        """
+        Get detailed project status with phase progression and milestones.
+        
+        Args:
+            proposal_id: Proposal ID
+            
+        Returns:
+            Detailed project status dictionary
+        """
+        try:
+            proposal = self.get_proposal(proposal_id)
+            if not proposal:
+                raise ProposalServiceError(f"Proposal {proposal_id} not found")
+            
+            tracker = self.get_project_tracker(proposal_id)
+            if not tracker:
+                raise ProposalServiceError(f"Project tracker not found for proposal {proposal_id}")
+            
+            # Calculate phase progress
+            phases_completed = sum([
+                tracker.exploratory_completed,
+                tracker.discovery_completed,
+                tracker.development_completed,
+                tracker.deployment_completed
+            ])
+            
+            total_phases = 4
+            progress_percentage = (phases_completed / total_phases) * 100
+            
+            # Determine next phase
+            next_phase = None
+            if not tracker.exploratory_completed:
+                next_phase = "exploratory"
+            elif not tracker.discovery_completed:
+                next_phase = "discovery"
+            elif not tracker.development_completed:
+                next_phase = "development"
+            elif not tracker.deployment_completed:
+                next_phase = "deployment"
+            
+            # Get phase-specific milestones
+            milestones = self._get_phase_milestones(tracker.current_phase.value)
+            
+            return {
+                "proposal_id": proposal_id,
+                "project_name": tracker.project_name,
+                "client_name": tracker.client_name,
+                "current_phase": tracker.current_phase.value,
+                "next_phase": next_phase,
+                "progress_percentage": progress_percentage,
+                "phases": {
+                    "exploratory": {
+                        "completed": tracker.exploratory_completed,
+                        "is_current": tracker.current_phase == ProjectPhaseEnum.EXPLORATORY
+                    },
+                    "discovery": {
+                        "completed": tracker.discovery_completed,
+                        "is_current": tracker.current_phase == ProjectPhaseEnum.DISCOVERY
+                    },
+                    "development": {
+                        "completed": tracker.development_completed,
+                        "is_current": tracker.current_phase == ProjectPhaseEnum.DEVELOPMENT
+                    },
+                    "deployment": {
+                        "completed": tracker.deployment_completed,
+                        "is_current": tracker.current_phase == ProjectPhaseEnum.DEPLOYMENT
+                    }
+                },
+                "milestones": milestones,
+                "timeline": {
+                    "start_date": tracker.start_date.isoformat() if tracker.start_date else None,
+                    "estimated_completion": tracker.estimated_completion.isoformat() if tracker.estimated_completion else None,
+                    "actual_completion": tracker.actual_completion.isoformat() if tracker.actual_completion else None
+                },
+                "created_at": tracker.created_at.isoformat(),
+                "updated_at": tracker.updated_at.isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting detailed project status: {str(e)}")
+            raise ProposalServiceError(f"Failed to get project status: {str(e)}")
+
+    def advance_project_phase(
+        self,
+        proposal_id: int,
+        completion_notes: Optional[str] = None,
+        performed_by: int = None
+    ) -> Dict[str, Any]:
+        """
+        Advance project to the next phase and mark current phase as completed.
+        
+        Args:
+            proposal_id: Proposal ID
+            completion_notes: Notes about phase completion
+            performed_by: User ID who performed the action
+            
+        Returns:
+            Updated project status
+        """
+        try:
+            tracker = self.get_project_tracker(proposal_id)
+            if not tracker:
+                raise ProposalServiceError(f"Project tracker not found for proposal {proposal_id}")
+            
+            current_phase = tracker.current_phase
+            next_phase = None
+            
+            # Determine next phase and mark current as completed
+            if current_phase == ProjectPhaseEnum.EXPLORATORY:
+                tracker.exploratory_completed = True
+                next_phase = ProjectPhaseEnum.DISCOVERY
+            elif current_phase == ProjectPhaseEnum.DISCOVERY:
+                tracker.discovery_completed = True
+                next_phase = ProjectPhaseEnum.DEVELOPMENT
+            elif current_phase == ProjectPhaseEnum.DEVELOPMENT:
+                tracker.development_completed = True
+                next_phase = ProjectPhaseEnum.DEPLOYMENT
+            elif current_phase == ProjectPhaseEnum.DEPLOYMENT:
+                tracker.deployment_completed = True
+                # Project is complete
+                tracker.actual_completion = datetime.utcnow()
+            else:
+                raise ProposalServiceError(f"Unknown current phase: {current_phase}")
+            
+            # Update to next phase if not at end
+            if next_phase:
+                tracker.current_phase = next_phase
+                
+                # Also update proposal phase
+                proposal = self.get_proposal(proposal_id)
+                if proposal:
+                    proposal.phase = next_phase
+            
+            self.db.commit()
+            
+            # Log audit trail
+            if performed_by:
+                self._log_audit_action(
+                    proposal_id, AuditActionEnum.STATUS_CHANGED, performed_by,
+                    f"Advanced project from {current_phase.value} to {next_phase.value if next_phase else 'completed'}",
+                    {
+                        "previous_phase": current_phase.value,
+                        "new_phase": next_phase.value if next_phase else "completed",
+                        "completion_notes": completion_notes
+                    }
+                )
+            
+            logger.info(f"Advanced project {proposal_id} from {current_phase.value} to {next_phase.value if next_phase else 'completed'}")
+            
+            # Return updated status
+            return self.get_detailed_project_status(proposal_id)
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error advancing project phase: {str(e)}")
+            raise ProposalServiceError(f"Failed to advance project phase: {str(e)}")
+
+    def update_project_milestone(
+        self,
+        proposal_id: int,
+        milestone_name: str,
+        milestone_status: str,
+        milestone_notes: Optional[str] = None,
+        performed_by: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """
+        Update project milestone status and tracking.
+        
+        Args:
+            proposal_id: Proposal ID
+            milestone_name: Name of the milestone
+            milestone_status: Status (not_started, in_progress, completed, blocked)
+            milestone_notes: Additional notes
+            performed_by: User ID who performed the action
+            
+        Returns:
+            Updated milestone information
+        """
+        try:
+            tracker = self.get_project_tracker(proposal_id)
+            if not tracker:
+                raise ProposalServiceError(f"Project tracker not found for proposal {proposal_id}")
+            
+            # Validate milestone status
+            valid_statuses = ["not_started", "in_progress", "completed", "blocked"]
+            if milestone_status not in valid_statuses:
+                raise ProposalServiceError(f"Invalid milestone status: {milestone_status}")
+            
+            # Store milestone data in tracker (we could extend the model to have a milestones JSON field)
+            # For now, we'll log it in the audit trail and return structured data
+            
+            milestone_data = {
+                "milestone_name": milestone_name,
+                "status": milestone_status,
+                "notes": milestone_notes,
+                "updated_at": datetime.utcnow().isoformat(),
+                "phase": tracker.current_phase.value
+            }
+            
+            # Log audit trail
+            if performed_by:
+                self._log_audit_action(
+                    proposal_id, AuditActionEnum.UPDATED, performed_by,
+                    f"Updated milestone '{milestone_name}' to '{milestone_status}'",
+                    milestone_data
+                )
+            
+            # Calculate milestone impact on phase progress
+            phase_milestones = self._get_phase_milestones(tracker.current_phase.value)
+            milestone_impact = self._calculate_milestone_impact(milestone_name, milestone_status, phase_milestones)
+            
+            logger.info(f"Updated milestone '{milestone_name}' for proposal {proposal_id} to '{milestone_status}'")
+            
+            return {
+                "proposal_id": proposal_id,
+                "milestone": milestone_data,
+                "phase_impact": milestone_impact,
+                "current_phase": tracker.current_phase.value,
+                "project_name": tracker.project_name
+            }
+            
+        except Exception as e:
+            logger.error(f"Error updating project milestone: {str(e)}")
+            raise ProposalServiceError(f"Failed to update milestone: {str(e)}")
+
+    def _get_phase_milestones(self, phase: str) -> List[Dict[str, Any]]:
+        """
+        Get default milestones for a project phase.
+        
+        Args:
+            phase: Project phase
+            
+        Returns:
+            List of milestone dictionaries
+        """
+        milestones_by_phase = {
+            "exploratory": [
+                {"name": "Initial Client Meeting", "description": "Conduct discovery meeting with client"},
+                {"name": "Requirements Gathering", "description": "Document initial requirements and scope"},
+                {"name": "Feasibility Assessment", "description": "Assess technical and business feasibility"},
+                {"name": "Proposal Creation", "description": "Create and deliver project proposal"}
+            ],
+            "discovery": [
+                {"name": "Detailed Requirements", "description": "Finalize detailed technical requirements"},
+                {"name": "Architecture Design", "description": "Design system architecture and data models"},
+                {"name": "Technology Stack Selection", "description": "Choose appropriate technologies and frameworks"},
+                {"name": "Project Planning", "description": "Create detailed project timeline and resource plan"}
+            ],
+            "development": [
+                {"name": "Development Environment Setup", "description": "Set up development and testing environments"},
+                {"name": "Core Functionality Implementation", "description": "Implement core system features"},
+                {"name": "Integration Testing", "description": "Test system integrations and APIs"},
+                {"name": "User Acceptance Testing", "description": "Conduct UAT with client stakeholders"}
+            ],
+            "deployment": [
+                {"name": "Production Environment Setup", "description": "Configure production infrastructure"},
+                {"name": "System Deployment", "description": "Deploy application to production"},
+                {"name": "Go-Live Support", "description": "Provide support during system launch"},
+                {"name": "Project Handover", "description": "Complete documentation and knowledge transfer"}
+            ]
+        }
+        
+        return milestones_by_phase.get(phase, [])
+
+    def _calculate_milestone_impact(
+        self,
+        milestone_name: str,
+        milestone_status: str,
+        phase_milestones: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Calculate the impact of a milestone update on phase progress.
+        
+        Args:
+            milestone_name: Name of the milestone
+            milestone_status: New status of the milestone
+            phase_milestones: List of milestones for the current phase
+            
+        Returns:
+            Impact analysis dictionary
+        """
+        total_milestones = len(phase_milestones)
+        
+        # Simple impact calculation based on status
+        impact_weights = {
+            "not_started": 0,
+            "in_progress": 0.5,
+            "completed": 1.0,
+            "blocked": -0.2  # Negative impact for blocked milestones
+        }
+        
+        milestone_weight = impact_weights.get(milestone_status, 0)
+        
+        return {
+            "milestone_progress": milestone_weight,
+            "phase_milestone_count": total_milestones,
+            "estimated_phase_impact": (milestone_weight / total_milestones) * 100,
+            "status_description": {
+                "not_started": "Milestone has not been started",
+                "in_progress": "Milestone is currently being worked on",
+                "completed": "Milestone has been successfully completed",
+                "blocked": "Milestone is blocked and needs attention"
+            }.get(milestone_status, "Unknown status")
+        }
